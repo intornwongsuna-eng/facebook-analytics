@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>KVK Social Analytics Dashboard</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="page-header">
+        <div>
+          <p class="eyebrow">KVK A Content Team Analysis</p>
+          <h1>Social Media Enterprise Dashboard</h1>
+          <p class="subtitle">
+            วิเคราะห์ Facebook และ Instagram แยก platform พร้อม benchmark, grade และ filter ตามแผนก/คุณภาพ
+          </p>
+        </div>
+        <div class="platform-tabs" role="tablist" aria-label="Platform tabs">
+          <button id="tabFacebook" class="platform-tab active fb" type="button" data-platform="facebook">
+            Facebook <span id="facebookTabCount">0</span>
+          </button>
+          <button id="tabInstagram" class="platform-tab ig" type="button" data-platform="instagram">
+            Instagram <span id="instagramTabCount">0</span>
+          </button>
+        </div>
+      </header>
+
+      <section class="upload-panel" aria-label="Upload CSV files">
+        <div class="upload-item">
+          <input id="facebookInput" class="file-input" type="file" accept=".csv,text/csv" />
+          <label for="facebookInput" class="file-button fb">เลือก Facebook CSV</label>
+          <div>
+            <strong id="facebookFileName">ยังไม่ได้เลือกไฟล์ Facebook</strong>
+            <span>Page Insights export เช่น reach, clicks, video watch time</span>
+          </div>
+        </div>
+
+        <div class="upload-item">
+          <input id="instagramInput" class="file-input" type="file" accept=".csv,text/csv" />
+          <label for="instagramInput" class="file-button ig">เลือก Instagram CSV</label>
+          <div>
+            <strong id="instagramFileName">ยังไม่ได้เลือกไฟล์ Instagram</strong>
+            <span>Instagram content export เช่น reach, likes, saves, shares</span>
+          </div>
+        </div>
+
+        <button id="processButton" class="process-button" type="button">ประมวลผลข้อมูล</button>
+      </section>
+
+      <section class="status-strip" aria-label="Data status">
+        <div>
+          <span>Facebook</span>
+          <strong id="facebookStatus">ยังไม่มีข้อมูล</strong>
+        </div>
+        <div>
+          <span>Instagram</span>
+          <strong id="instagramStatus">ยังไม่มีข้อมูล</strong>
+        </div>
+        <div>
+          <span>Active View</span>
+          <strong id="activeStatus">-</strong>
+        </div>
+      </section>
+
+      <section id="noticeBox" class="notice" hidden></section>
+
+      <section id="emptyState" class="empty-state">
+        <h2>เลือกไฟล์ Facebook และ/หรือ Instagram แล้วกดประมวลผล</h2>
+        <p>
+          Dashboard นี้ทำงานใน browser ทั้งหมด ข้อมูลไม่ถูกส่งออกนอกเครื่อง และจะไม่ตัดโพสต์ศัลยกรรมทิ้ง แต่ให้เลือกดูผ่าน dropdown filter
+        </p>
+      </section>
+
+      <section id="facebookView" class="platform-view" hidden>
+        <article class="methodology-card fb-border">
+          <div class="methodology-title fb-soft">
+            <div>
+              <h2>Facebook Benchmarks & Methodology</h2>
+              <p>อ้างอิงแนวเดียวกับตัวอย่าง: วัดภาพนิ่งด้วย CTR และวัดวิดีโอด้วย retention signal ที่มีในไฟล์</p>
+            </div>
+          </div>
+          <div class="methodology-grid">
+            <div>
+              <h3>ภาพนิ่ง (Image)</h3>
+              <div class="grade-rules">
+                <span class="grade-chip grade-a">Grade A: CTR >= 3.5%</span>
+                <span class="grade-chip grade-b">Grade B: CTR 1.5% - 3.49%</span>
+                <span class="grade-chip grade-c">Grade C: CTR < 1.5%</span>
+              </div>
+              <p>CTR = การคลิกทั้งหมด / Reach ใช้ชี้ว่า creative ทำให้ผู้ชมสนใจต่อหรือไม่</p>
+            </div>
+            <div>
+              <h3>วิดีโอ (Video)</h3>
+              <div class="grade-rules">
+                <span class="grade-chip grade-a">Grade A: Retention proxy >= 10%</span>
+                <span class="grade-chip grade-b">Grade B: 5% - 9.99%</span>
+                <span class="grade-chip grade-c">Grade C: < 5%</span>
+              </div>
+              <p>ไฟล์นี้ไม่มี 1-minute retention โดยตรง จึงใช้ Average Watch Time / Duration เป็น proxy เมื่อมีข้อมูลพอ</p>
+            </div>
+          </div>
+        </article>
+
+        <div class="sub-tabs" role="tablist" aria-label="Facebook content type">
+          <button id="facebookImageTab" class="sub-tab active fb" type="button" data-type="image">
+            ภาพนิ่ง <span id="facebookImageCount">0</span>
+          </button>
+          <button id="facebookVideoTab" class="sub-tab" type="button" data-type="video">
+            วิดีโอ <span id="facebookVideoCount">0</span>
+          </button>
+        </div>
+
+        <section class="filter-bar" aria-label="Facebook filters">
+          <select id="facebookDepartmentFilter">
+            <option value="all">ทุกแผนก</option>
+            <option value="surgery">ศัลยกรรม</option>
+            <option value="aesthetic">หัตถการ / เสริมความงาม</option>
+            <option value="brand">แบรนด์ / โปรโมชัน / ประกาศ</option>
+          </select>
+          <select id="facebookQualityFilter">
+            <option value="all">ทุกคุณภาพ</option>
+            <option value="A">Grade A</option>
+            <option value="B">Grade B</option>
+            <option value="C">Grade C</option>
+            <option value="NA">N/A</option>
+          </select>
+          <input id="facebookSearch" type="search" placeholder="ค้นหาโพสต์ Facebook..." />
+        </section>
+
+        <section id="facebookKpis" class="kpi-grid"></section>
+        <section class="visual-grid">
+          <article class="panel panel-wide">
+            <div class="panel-heading">
+              <h2>Weekly Trend</h2>
+              <p>Reach, engagement และ clicks ตามสัปดาห์</p>
+            </div>
+            <div id="facebookTrendChart" class="chart-box"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-heading">
+              <h2>แผนก</h2>
+              <p>Performance ตาม department filter</p>
+            </div>
+            <div id="facebookDepartmentChart" class="chart-box compact"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-heading">
+              <h2>Top Posts</h2>
+              <p>โพสต์ที่ reach สูงสุดใน view นี้</p>
+            </div>
+            <div id="facebookTopChart" class="chart-box compact"></div>
+          </article>
+        </section>
+        <section class="panel panel-wide">
+          <div class="panel-heading">
+            <h2>Facebook Content Table</h2>
+            <p>เรียงตาม Reach พร้อม grade และ benchmark metric</p>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead id="facebookTableHead"></thead>
+              <tbody id="facebookTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <section id="instagramView" class="platform-view" hidden>
+        <article class="methodology-card ig-border">
+          <div class="methodology-title ig-soft">
+            <div>
+              <h2>Instagram Benchmarks & Methodology</h2>
+              <p>วัดคุณภาพด้วย Engagement Rate (ER) ตามแนว Health & Beauty benchmark ในตัวอย่าง</p>
+            </div>
+          </div>
+          <div class="methodology-grid">
+            <div>
+              <h3>Engagement Rate (ER)</h3>
+              <div class="grade-rules">
+                <span class="grade-chip grade-a">Grade A: ER >= 2.5%</span>
+                <span class="grade-chip grade-b">Grade B: ER 1.0% - 2.49%</span>
+                <span class="grade-chip grade-c">Grade C: ER < 1.0%</span>
+              </div>
+              <p>ER = (likes + comments + shares + saves + follows) / Reach</p>
+            </div>
+            <div>
+              <h3>Instagram Context</h3>
+              <p>
+                ER เหมาะกับ Instagram เพราะพฤติกรรมผู้ใช้เน้น visual engagement มากกว่า click-through และไฟล์นี้มี like/save/share/comment ครบสำหรับคำนวณ
+              </p>
+            </div>
+          </div>
+        </article>
+
+        <section class="filter-bar" aria-label="Instagram filters">
+          <select id="instagramDepartmentFilter">
+            <option value="all">ทุกแผนก</option>
+            <option value="surgery">ศัลยกรรม</option>
+            <option value="aesthetic">หัตถการ / เสริมความงาม</option>
+            <option value="brand">แบรนด์ / โปรโมชัน / ประกาศ</option>
+          </select>
+          <select id="instagramQualityFilter">
+            <option value="all">ทุกคุณภาพ (ER)</option>
+            <option value="A">Grade A</option>
+            <option value="B">Grade B</option>
+            <option value="C">Grade C</option>
+          </select>
+          <select id="instagramTypeFilter">
+            <option value="all">ทุกประเภทโพสต์</option>
+            <option value="video">Reels / วิดีโอ</option>
+            <option value="image">ภาพนิ่ง / สไลด์</option>
+          </select>
+          <input id="instagramSearch" type="search" placeholder="ค้นหาโพสต์ Instagram..." />
+        </section>
+
+        <section id="instagramKpis" class="kpi-grid"></section>
+        <section class="visual-grid">
+          <article class="panel panel-wide">
+            <div class="panel-heading">
+              <h2>Weekly Trend</h2>
+              <p>Reach และ engagement ตามสัปดาห์</p>
+            </div>
+            <div id="instagramTrendChart" class="chart-box"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-heading">
+              <h2>Grade Mix</h2>
+              <p>สัดส่วนคุณภาพตาม ER</p>
+            </div>
+            <div id="instagramGradeChart" class="chart-box compact"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-heading">
+              <h2>Top Posts</h2>
+              <p>โพสต์ที่ ER สูงสุดใน view นี้</p>
+            </div>
+            <div id="instagramTopChart" class="chart-box compact"></div>
+          </article>
+        </section>
+        <section class="panel panel-wide">
+          <div class="panel-heading">
+            <h2>Instagram Content Table</h2>
+            <p>เรียงตาม ER พร้อม action metrics</p>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>เนื้อหา</th>
+                  <th>แผนก</th>
+                  <th>ประเภท</th>
+                  <th>Reach</th>
+                  <th>Views</th>
+                  <th>Engagement</th>
+                  <th>ER</th>
+                  <th>Grade</th>
+                  <th>ลิงก์</th>
+                </tr>
+              </thead>
+              <tbody id="instagramTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

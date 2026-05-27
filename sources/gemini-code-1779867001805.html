@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KVK A Content Team Analysis | Social Media Enterprise Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    body { font-family: 'Inter', 'Prompt', sans-serif; background-color: #f8fafc; color: #0f172a; }
+    .hide-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+    .hide-scroll::-webkit-scrollbar-track { background: #f1f5f9; }
+    .hide-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    .hide-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    
+    .plat-tab { transition: all 0.2s ease; border-bottom-width: 3px; }
+    .plat-tab.active-fb { color: #1877f2; border-color: #1877f2; font-weight: 700; background: #eff6ff; }
+    .plat-tab.active-ig { color: #e1306c; border-color: #e1306c; font-weight: 700; background: #fdf2f8; }
+    .plat-tab.active-yt { color: #ff0000; border-color: #ff0000; font-weight: 700; background: #fef2f2; }
+    .plat-tab.inactive { color: #64748b; border-color: transparent; font-weight: 500; }
+    .plat-tab.inactive:hover { color: #334155; border-color: #cbd5e1; background: #f1f5f9; }
+
+    .modal-overlay { opacity: 0; pointer-events: none; transition: opacity 0.2s ease; }
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
+    .modal-content { transform: scale(0.95) translateY(10px); transition: all 0.2s ease-out; }
+    .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
+
+    .grade-A { background-color: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+    .grade-B { background-color: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+    .grade-C { background-color: #ffe4e6; color: #be123c; border: 1px solid #fecdd3; }
+
+    .methodology-box { border-left: 3px solid currentColor; }
+  </style>
+</head>
+<body class="p-4 md:p-8 min-h-screen">
+
+  <div class="max-w-[1440px] mx-auto">
+    <header class="mb-6 pb-4 border-b border-slate-200 flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div>
+        <h1 class="text-3xl font-bold text-slate-900 tracking-tight flex items-center gap-3">
+          <span class="w-3 h-8 bg-slate-800 rounded-sm"></span>
+          KVK A Content Team Analysis
+        </h1>
+        <p class="text-sm text-slate-500 mt-2">ศูนย์ประเมินคุณภาพคอนเทนต์เชิงลึก (ตัดโพสต์ขยะและโพสต์ตารางออกแล้ว) วัดผลด้วยเกณฑ์อุตสาหกรรมสากล</p>
+      </div>
+      <div class="flex gap-2 rounded-lg bg-slate-100 p-1 border border-slate-200">
+        <button id="tab-fb" onclick="switchPlatform('fb')" class="plat-tab active-fb px-6 py-2.5 text-sm rounded-md cursor-pointer">🟦 Facebook (60)</button>
+        <button id="tab-ig" onclick="switchPlatform('ig')" class="plat-tab inactive px-6 py-2.5 text-sm rounded-md cursor-pointer">🟪 Instagram (65)</button>
+        <button id="tab-yt" onclick="switchPlatform('yt')" class="plat-tab inactive px-6 py-2.5 text-sm rounded-md cursor-pointer">🟥 YouTube (83)</button>
+      </div>
+    </header>
+
+    <div id="plat-fb" class="block space-y-6">
+      
+      <div class="bg-white border border-blue-200 rounded-xl overflow-hidden shadow-sm">
+        <div class="bg-blue-50 px-5 py-4 border-b border-blue-100 flex items-center gap-2">
+          <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>
+          <div>
+            <h3 class="text-sm font-bold text-slate-800">Facebook Benchmarks & Methodology</h3>
+            <p class="text-[11px] text-slate-500">อ้างอิงหลักเกณฑ์: Meta Business Insights 2024 & Clinic Performance Matrix</p>
+          </div>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-0">
+          <div class="p-5 border-b lg:border-b-0 lg:border-r border-slate-100">
+            <h4 class="font-bold text-slate-800 text-xs mb-3 flex items-center gap-2"><span class="text-xl">📸</span> สำหรับภาพนิ่ง (Image)</h4>
+            <div class="space-y-2 text-xs">
+              <div class="flex justify-between items-center p-2 rounded bg-slate-50"><span class="font-bold text-emerald-600">🟢 Grade A: CTR ≥ 3.5%</span><span class="text-slate-600">อัดงบสเกลต่อ (Winning)</span></div>
+              <div class="flex justify-between items-center p-2 rounded bg-slate-50"><span class="font-bold text-amber-600">🟡 Grade B: CTR 1.5% - 3.49%</span><span class="text-slate-600">มาตรฐาน (Standard)</span></div>
+              <div class="flex justify-between items-center p-2 rounded bg-slate-50"><span class="font-bold text-rose-600">🔴 Grade C: CTR &lt; 1.5%</span><span class="text-slate-600">ปรับปก/หยุดแอด (Danger)</span></div>
+            </div>
+            <div class="mt-4 p-3 bg-blue-50/50 rounded-lg methodology-box text-blue-600 text-[11px] leading-relaxed">
+              <strong>ทำไมต้องใช้เกณฑ์นี้?:</strong> ค่าเฉลี่ย CTR ของเพจความงามบน Facebook ในไทยอยู่ที่ 0.8-1.2% การทำได้ทะลุ 3.5% คือคอนเทนต์ที่เอาชนะพฤติกรรม "ไถฟีดผ่าน" ของคนไทยได้สำเร็จ (Top 5% ของอุตสาหกรรม)
+            </div>
+          </div>
+          <div class="p-5">
+            <h4 class="font-bold text-slate-800 text-xs mb-3 flex items-center gap-2"><span class="text-xl">🎬</span> สำหรับวิดีโอ (Video)</h4>
+            <div class="space-y-2 text-xs">
+              <div class="flex justify-between items-center p-2 rounded bg-slate-50"><span class="font-bold text-emerald-600">🟢 Grade A: 1m Ret ≥ 10%</span><span class="text-slate-600">สร้าง Trust สูง ปิดการขายได้</span></div>
+              <div class="flex justify-between items-center p-2 rounded bg-slate-50"><span class="font-bold text-amber-600">🟡 Grade B: 1m Ret 5% - 9.9%</span><span class="text-slate-600">สร้าง Awareness ระดับกลาง</span></div>
+              <div class="flex justify-between items-center p-2 rounded bg-slate-50"><span class="font-bold text-rose-600">🔴 Grade C: 3s Hook &lt; 15%</span><span class="text-slate-600">อินโทรพัง คนปัดทิ้งด่วน</span></div>
+            </div>
+            <div class="mt-4 p-3 bg-blue-50/50 rounded-lg methodology-box text-blue-600 text-[11px] leading-relaxed">
+              <strong>ทำไมต้องใช้เกณฑ์นี้?:</strong> Facebook Algorithm จะลดการเข้าถึงคลิปที่คนดูไม่ผ่าน 3 วินาทีแรก หากวิดีโอไหนสามารถรั้งคนดูได้เกิน 1 นาทีทะลุ 10% ถือเป็น "เกณฑ์ทองคำ" สำหรับการทำ Retargeting แบบแม่นยำ
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex gap-4 border-b border-slate-200">
+        <button id="fb-sub-img" onclick="switchFbSub('img')" class="pb-2 px-4 text-sm font-bold text-blue-600 border-b-2 border-blue-600 cursor-pointer">ภาพนิ่ง (32)</button>
+        <button id="fb-sub-vid" onclick="switchFbSub('vid')" class="pb-2 px-4 text-sm font-medium text-slate-500 hover:text-slate-800 cursor-pointer">วิดีโอ (28)</button>
+      </div>
+
+      <div class="bg-white border border-slate-200 p-4 rounded-xl shadow-sm flex flex-wrap gap-4 items-center">
+        <select id="fb-dept" onchange="renderFb()" class="bg-slate-50 border border-slate-300 text-xs rounded-md px-3 py-2 outline-none focus:border-blue-500 cursor-pointer">
+          <option value="all">ทุกแผนก</option><option value="surgery">🔪 ศัลยกรรม</option><option value="aesthetic">💉 หัตถการ</option>
+        </select>
+        <select id="fb-grade" onchange="renderFb()" class="bg-slate-50 border border-slate-300 text-xs rounded-md px-3 py-2 outline-none focus:border-blue-500 cursor-pointer">
+          <option value="all">ทุกเกรดคุณภาพ</option><option value="A">🟢 Grade A (ดีเยี่ยม)</option><option value="B">🟡 Grade B (มาตรฐาน)</option><option value="C">🔴 Grade C (ต้องแก้ไข)</option>
+        </select>
+        <input type="text" id="fb-search" oninput="renderFb()" placeholder="ค้นหาชื่อโพสต์..." class="bg-slate-50 border border-slate-300 text-xs rounded-md px-3 py-2 outline-none focus:border-blue-500 w-full md:w-64 ml-auto">
+      </div>
+
+      <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+        <div class="overflow-x-auto hide-scroll">
+          <table class="w-full text-left text-sm border-collapse" id="fb-table">
+            <thead class="bg-slate-50 text-slate-500 text-[11px] uppercase tracking-wider border-b border-slate-200" id="fb-thead"></thead>
+            <tbody id="fb-tbody" class="divide-y divide-slate-100"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+
+    <div id="plat-ig" class="hidden space-y-6">
+      
+      <div class="bg-white border border-pink-200 rounded-xl overflow-hidden shadow-sm">
+        <div class="bg-pink-50 px-5 py-4 border-b border-pink-100 flex items-center gap-2">
+          <svg class="w-5 h-5 text-pink-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>
+          <div>
+            <h3 class="text-sm font-bold text-slate-800">Instagram Benchmarks & Methodology</h3>
+            <p class="text-[11px] text-slate-500">อ้างอิงหลักเกณฑ์: RivalIQ 2024 Social Media Industry Benchmark Report (Health & Beauty)</p>
+          </div>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-0">
+          <div class="p-5 border-b lg:border-b-0 lg:border-r border-slate-100">
+            <h4 class="font-bold text-slate-800 text-xs mb-3 flex items-center gap-2">การวัดผล Engagement Rate (ER)</h4>
+            <div class="space-y-2 text-xs">
+              <div class="flex justify-between items-center p-2 rounded bg-slate-50"><span class="font-bold text-emerald-600">🟢 Grade A: ER ≥ 2.5%</span><span class="text-slate-600">ไวรัล ดึงดูดสูงมาก</span></div>
+              <div class="flex justify-between items-center p-2 rounded bg-slate-50"><span class="font-bold text-amber-600">🟡 Grade B: ER 1.0% - 2.49%</span><span class="text-slate-600">มาตรฐานคลินิกชั้นนำ</span></div>
+              <div class="flex justify-between items-center p-2 rounded bg-slate-50"><span class="font-bold text-rose-600">🔴 Grade C: ER &lt; 1.0%</span><span class="text-slate-600">คอนเทนต์ไม่ตรงจริตฟอลโลเวอร์</span></div>
+            </div>
+          </div>
+          <div class="p-5">
+            <h4 class="font-bold text-slate-800 text-xs mb-3 flex items-center gap-2">Instagram Algorithm Context</h4>
+            <div class="mt-1 p-3 bg-pink-50/50 rounded-lg methodology-box text-pink-600 text-[11px] leading-relaxed">
+              <strong>ทำไมต้องใช้เกณฑ์นี้?:</strong> รายงานปี 2024 ระบุว่ากลุ่ม Health & Beauty มีค่าเฉลี่ย ER เพียง 0.34% การตั้งเกณฑ์ Grade A ไว้ที่ 2.5% คือการเซ็ตมาตรฐานแบรนด์ระดับไฮเอนด์ (Top Tier) เพราะพฤติกรรมผู้ใช้ IG เน้นความสวยงามทาง Visual (Aesthetic) ภาพที่มียอดสูงมักเป็น Lifestyle หรือความรู้แบบพรีเมียม มากกว่าโฆษณาขายตรง
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex gap-4 border-b border-slate-200">
+        <button id="ig-sub-vid" onclick="switchIgSub('vid')" class="pb-2 px-4 text-sm font-bold text-pink-600 border-b-2 border-pink-600 cursor-pointer">Reels / วิดีโอ (15)</button>
+        <button id="ig-sub-img" onclick="switchIgSub('img')" class="pb-2 px-4 text-sm font-medium text-slate-500 hover:text-slate-800 cursor-pointer">ภาพนิ่ง & สไลด์ (50)</button>
+      </div>
+
+      <div class="bg-white border border-slate-200 p-4 rounded-xl shadow-sm flex flex-wrap gap-4 items-center">
+        <select id="ig-grade" onchange="renderIg()" class="bg-slate-50 border border-slate-300 text-xs rounded-md px-3 py-2 outline-none focus:border-pink-500 cursor-pointer">
+          <option value="all">ทุกเกรดคุณภาพ (ER%)</option><option value="A">🟢 Grade A (ER ≥ 2.5%)</option><option value="B">🟡 Grade B (ER 1-2.49%)</option><option value="C">🔴 Grade C (ER &lt; 1%)</option>
+        </select>
+        <input type="text" id="ig-search" oninput="renderIg()" placeholder="ค้นหาเนื้อหาโพสต์ IG..." class="bg-slate-50 border border-slate-300 text-xs rounded-md px-3 py-2 outline-none focus:border-pink-500 w-full md:w-64 ml-auto">
+      </div>
+
+      <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+        <div class="overflow-x-auto hide-scroll">
+          <table class="w-full text-left text-sm border-collapse" id="ig-table">
+            <thead class="bg-slate-50 text-slate-500 text-[11px] uppercase tracking-wider border-b border-slate-200">
+              <tr>
+                <th class="p-4 w-12 text-center">#</th>
+                <th class="p-4 min-w-[280px]">เนื้อหา / แคปชั่นย่อ</th>
+                <th class="p-4 text-right cursor-pointer" onclick="sortData('ig','reach')">Reach ↕</th>
+                <th class="p-4 text-right cursor-pointer" onclick="sortData('ig','views')">Views ↕</th>
+                <th class="p-4 text-right cursor-pointer" onclick="sortData('ig','eng')">Engage ↕</th>
+                <th class="p-4 text-right cursor-pointer" onclick="sortData('ig','er')">ER % ↕</th>
+                <th class="p-4 text-center">คุณภาพ (Grade)</th>
+              </tr>
+            </thead>
+            <tbody id="ig-tbody" class="divide-y divide-slate-100"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+
+    <div id="plat-yt" class="hidden space-y-6">
+      
+      <div class="bg-white border border-red-200 rounded-xl overflow-hidden shadow-sm">
+        <div class="bg-red-50 px-5 py-4 border-b border-red-100 flex items-center gap-2">
+          <svg class="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>
+          <div>
+            <h3 class="text-sm font-bold text-slate-800">YouTube Benchmarks & Methodology</h3>
+            <p class="text-[11px] text-slate-500">อ้างอิงหลักเกณฑ์: YouTube Creator Academy & Social Media Examiner 2024</p>
+          </div>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-0">
+          <div class="p-5 border-b lg:border-b-0 lg:border-r border-slate-100">
+            <h4 class="font-bold text-slate-800 text-xs mb-3 flex items-center gap-2"><span class="text-xl">🎥</span> สำหรับ Long Video</h4>
+            <div class="space-y-2 text-xs">
+              <div class="flex justify-between items-center p-2 rounded bg-slate-50"><span class="font-bold text-emerald-600">🟢 Grade A: ดูจบ ≥ 40% (CTR>4%)</span><span class="text-slate-600">ทำ SEO ดันอันดับได้</span></div>
+              <div class="flex justify-between items-center p-2 rounded bg-slate-50"><span class="font-bold text-amber-600">🟡 Grade B: ดูจบ 20% - 39%</span><span class="text-slate-600">มาตรฐานคลิปให้ความรู้</span></div>
+              <div class="flex justify-between items-center p-2 rounded bg-slate-50"><span class="font-bold text-rose-600">🔴 Grade C: ดูจบ &lt; 20%</span><span class="text-slate-600">คลิกเบต / ยืดเยื้อ</span></div>
+            </div>
+            <div class="mt-4 p-3 bg-red-50/50 rounded-lg methodology-box text-red-600 text-[11px] leading-relaxed">
+              <strong>ทำไมต้องใช้เกณฑ์นี้?:</strong> YouTube Algorithm ให้ความสำคัญกับ Watch Time (Session Time) มากกว่ายอดวิวประปราย การตั้งเกณฑ์ Long Video ไว้ที่ 40% คือสัดส่วนที่ระบบจะเริ่มแนะนำคลิป (Recommend) สู่หน้าแรกของคนที่ไม่ได้กดซับ
+            </div>
+          </div>
+          <div class="p-5">
+            <h4 class="font-bold text-slate-800 text-xs mb-3 flex items-center gap-2"><span class="text-xl">📱</span> สำหรับ Shorts (วิดีโอสั้น)</h4>
+            <div class="space-y-2 text-xs">
+              <div class="flex justify-between items-center p-2 rounded bg-slate-50"><span class="font-bold text-emerald-600">🟢 Grade A: ดูจบ ≥ 70%</span><span class="text-slate-600">ระดับ Viral อัลกอริทึมดัน</span></div>
+              <div class="flex justify-between items-center p-2 rounded bg-slate-50"><span class="font-bold text-amber-600">🟡 Grade B: ดูจบ 50% - 69%</span><span class="text-slate-600">มาตรฐานปกติตามฟีด</span></div>
+              <div class="flex justify-between items-center p-2 rounded bg-slate-50"><span class="font-bold text-rose-600">🔴 Grade C: ดูจบ &lt; 50%</span><span class="text-slate-600">คนปัดทิ้งรวดเร็ว</span></div>
+            </div>
+            <div class="mt-4 p-3 bg-red-50/50 rounded-lg methodology-box text-red-600 text-[11px] leading-relaxed">
+              <strong>ทำไมต้องใช้เกณฑ์นี้?:</strong> กฎเหล็กของ Shorts คือ "Swipe-Away Rate" หรืออัตราปัดทิ้ง หากคลิปสั้นถูกปัดทิ้งเกินครึ่ง (ดูจบไม่ถึง 50%) YouTube จะตัดการจ่ายยอดวิวทันที
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex gap-4 border-b border-slate-200">
+        <button id="yt-sub-long" onclick="switchYtSub('long')" class="pb-2 px-4 text-sm font-bold text-red-600 border-b-2 border-red-600 cursor-pointer">Long Video (65)</button>
+        <button id="yt-sub-short" onclick="switchYtSub('short')" class="pb-2 px-4 text-sm font-medium text-slate-500 hover:text-slate-800 cursor-pointer">Shorts (18)</button>
+      </div>
+
+      <div class="bg-white border border-slate-200 p-4 rounded-xl shadow-sm flex flex-wrap gap-4 items-center">
+        <select id="yt-grade" onchange="renderYt()" class="bg-slate-50 border border-slate-300 text-xs rounded-md px-3 py-2 outline-none focus:border-red-500 cursor-pointer">
+          <option value="all">ทุกเกรดคุณภาพ (Retention%)</option><option value="A">🟢 Grade A (เจาะลึกดีเยี่ยม)</option><option value="B">🟡 Grade B (มาตรฐาน)</option><option value="C">🔴 Grade C (ต้องแก้ไข)</option>
+        </select>
+        <input type="text" id="yt-search" oninput="renderYt()" placeholder="ค้นหาชื่อคลิป YT..." class="bg-slate-50 border border-slate-300 text-xs rounded-md px-3 py-2 outline-none focus:border-red-500 w-full md:w-64 ml-auto">
+      </div>
+
+      <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+        <div class="overflow-x-auto hide-scroll">
+          <table class="w-full text-left text-sm border-collapse" id="yt-table">
+            <thead class="bg-slate-50 text-slate-500 text-[11px] uppercase tracking-wider border-b border-slate-200">
+              <tr>
+                <th class="p-4 w-12 text-center">#</th>
+                <th class="p-4 min-w-[280px]">ชื่อคลิปวิดีโอ</th>
+                <th class="p-4 text-right cursor-pointer" onclick="sortData('yt','views')">ยอดวิว ↕</th>
+                <th class="p-4 text-right cursor-pointer" onclick="sortData('yt','pct')">% คนดูจบ ↕</th>
+                <th class="p-4 text-right cursor-pointer" onclick="sortData('yt','ctr')">CTR ปกคลิป ↕</th>
+                <th class="p-4 text-right cursor-pointer" onclick="sortData('yt','subs')">ซับเพิ่ม ↕</th>
+                <th class="p-4 text-center">คุณภาพ (Grade)</th>
+              </tr>
+            </thead>
+            <tbody id="yt-tbody" class="divide-y divide-slate-100"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="detail-modal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeModal()"></div>
+    <div class="modal-content relative bg-white border border-slate-200 rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      <div class="p-5 border-b border-slate-100 flex justify-between items-start gap-4 bg-slate-50">
+        <div>
+          <span id="modal-badge" class="inline-block px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest rounded-full mb-2"></span>
+          <h3 id="modal-title" class="text-lg font-bold text-slate-900 leading-snug line-clamp-2"></h3>
+        </div>
+        <button onclick="closeModal()" class="text-slate-400 hover:text-slate-800 bg-white border border-slate-200 rounded-full p-2 shadow-sm shrink-0 cursor-pointer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      <div class="p-6 space-y-5 overflow-y-auto hide-scroll flex-grow">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="modal-metrics"></div>
+        <div id="modal-evaluation" class="p-4 rounded-xl border mt-2">
+          <h4 class="text-sm font-bold uppercase tracking-wider mb-2" id="eval-title"></h4>
+          <p class="text-[13px] leading-relaxed" id="eval-desc"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ----------------- DATA PREPARATION -----------------
+    function determineDept(title) {
+      const surgery = ['ชั้นตา', 'จมูก', 'ทรวงอก', 'ผ่าตัด', 'หน้าอก', 'ศัลยกรรม', 'sub brown', 'ตาสองชั้น'];
+      const lower = title.toLowerCase();
+      return surgery.some(kw => lower.includes(kw)) ? 'surgery' : 'aesthetic';
+    }
+
+    // 1. FB Data (Removed "ตารางแพทย์ออกตรวจ พฤษภาคม 2569")
+    const fbImgData = [
+      {title:"แค่เปลี่ยนชั้นตา ลุคก็ดูละมุนขึ้นทันที",views:3036,reach:1818,ctr:0.0,photo:0,er:0.66,cat:"ba"},
+      {title:"KVK Ultimate Lift Program 17 แบรนด์",views:2992,reach:1428,ctr:5.04,photo:51,er:0.7,cat:"promo"},
+      {title:"ยกชั้นตาให้เปิดชัด ดวงตาดูสดใสขึ้นทันที",views:2640,reach:1516,ctr:0.59,photo:4,er:0.86,cat:"ba"},
+      {title:"KVK GOLDEN PASS เริ่มต้น Route ใหม่",views:2341,reach:1430,ctr:1.12,photo:10,er:0.91,cat:"promo"},
+      {title:"เบื้องหลังการดูแล การเรียนรู้อย่างต่อเนื่อง",views:2131,reach:1177,ctr:8.41,photo:78,er:1.44,cat:"clinic"},
+      {title:"ชวนเพื่อนมาสวยคุ้ม X2 KVK Referral",views:1806,reach:1154,ctr:0.17,photo:1,er:0.26,cat:"promo"},
+      {title:"ตาชั้นเดียว → ลุคหมวยอินเตอร์",views:1507,reach:982,ctr:0.51,photo:4,er:0.61,cat:"ba"},
+      {title:"จากน้ำหนัก 155 กิโล สู่เวอร์ชันมั่นใจ",views:1356,reach:857,ctr:0.0,photo:0,er:0.47,cat:"ba"},
+      {title:"PAYDAY DEALS! สวยคุ้มส่งท้ายเดือน",views:831,reach:475,ctr:3.79,photo:16,er:0.42,cat:"promo"},
+      {title:"แค่ปรับทรงใหม่ ทรวงอกพอดีกับตัว",views:707,reach:413,ctr:0.0,photo:0,er:0.24,cat:"ba"},
+      {title:"5.5 MASSIVE SALE จัดหนัก จัดเต็ม",views:0,reach:2285,ctr:7.48,photo:144,er:0.61,cat:"promo"},
+      {title:"KVK Ultimate Lift Program เตือนแล้วนะ!",views:0,reach:1872,ctr:0.0,photo:0,er:0.64,cat:"promo"},
+      {title:"Healthcare Heroes สิทธิพิเศษบุคลากรการแพทย์",views:0,reach:49143,ctr:0.0,photo:0,er:0.26,cat:"promo"},
+      {title:"ตาที่เคยปรือไม่เท่ากัน ปรับแล้วดูสดใสขึ้น",views:0,reach:1212,ctr:0.0,photo:0,er:0.5,cat:"ba"},
+      {title:"ทำไมต้อง OligioX ที่ KVK",views:0,reach:1428,ctr:0.0,photo:0,er:0.42,cat:"info"},
+      {title:"สวยแบบพอดี ไม่จำเป็นต้องล้น",views:0,reach:1390,ctr:0.86,photo:10,er:0.36,cat:"info"},
+      {title:"บอกลาวงจรรอยสิว PIH และ PIE",views:0,reach:1562,ctr:0.96,photo:7,er:0.26,cat:"info"},
+      {title:"PICO LASER ฝ้า กระ จุดด่างดำ",views:0,reach:1295,ctr:0.0,photo:0,er:0.23,cat:"info"},
+      {title:"จบวงจรหน้ามัน สิวซ้ำ เทคโนโลยี 1450nm",views:0,reach:1376,ctr:0.0,photo:0,er:0.51,cat:"info"},
+      {title:"สเต็ปดูแลผิวหลัง Ultherapy Prime",views:0,reach:1280,ctr:0.0,photo:0,er:0.47,cat:"info"},
+      {title:"จมูกแบน ไม่มีมิติ → มุมข้างละมุน",views:0,reach:1247,ctr:0.08,photo:1,er:0.24,cat:"ba"},
+      {title:"ใบหน้าหย่อนคล้อยตามวัย กลับมาสดใสอีกครั้ง",views:0,reach:1154,ctr:0.17,photo:1,er:0.61,cat:"ba"},
+      {title:"KVK Beauty Passport ยิ่งสะสมยิ่งคุ้ม",views:0,reach:1347,ctr:1.56,photo:7,er:0.22,cat:"promo"},
+      {title:"KVK GOLDEN PASS New Journey",views:0,reach:2652,ctr:3.02,photo:78,er:0.23,cat:"promo"},
+      {title:"กรอบหน้ากลับมา เอาเหนียงออก",views:0,reach:1180,ctr:0.0,photo:0,er:0.59,cat:"ba"},
+      {title:"เปลี่ยนลุคใหม่ ออกแบบมิติริมฝีปาก",views:0,reach:1238,ctr:0.97,photo:10,er:0.32,cat:"ba"},
+      {title:"หยุดสาดฟิลเลอร์ใส่ร่องแก้ม! เทคนิคหมอกุ้ง",views:0,reach:2929,ctr:0.0,photo:0,er:2.56,cat:"info"},
+      {title:"ทรงสวยกำลังดี ละมุนแบบธรรมชาติ",views:0,reach:751,ctr:0.0,photo:0,er:1.2,cat:"ba"},
+      {title:"จากรูปร่างดูอวบ วันนี้มั่นใจขึ้นใน 2 เดือน",views:0,reach:766,ctr:0.26,photo:0,er:0.52,cat:"ba"},
+      {title:"ครบ 3 เดือนกับชั้นตาใหม่ แต่งหน้าง่ายขึ้น",views:0,reach:734,ctr:0.0,photo:0,er:0.41,cat:"ba"},
+      {title:"FACE CONTOURING ล็อกกรอบหน้าให้เป๊ะ",views:0,reach:453,ctr:0.88,photo:4,er:0.44,cat:"info"},
+      {title:"Morpheus 8 Prime ดีกว่าเดิมยังไง!",views:0,reach:204,ctr:4.41,photo:1,er:0.98,cat:"promo"}
+    ].map(i => ({...i, dept: determineDept(i.title)})); 
+
+    const fbVidData = [
+      {title:"เหตุผลที่หลายคนไม่กล้าเข้าคลินิก ไม่ใช่กลัวเจ็บ แต่กลัวโดนตื๊อ",views:27725,h3:19.6,r1m:0.0,wa:6.4},
+      {title:"จะรักษาก็ต้องรู้สาเหตุ! รอยโรคที่ผิวแบบไหน มาเช็กกัน",views:13270,h3:13.5,r1m:9.7,wa:4.3},
+      {title:"ก่อนตัดสินใจทำ Microneedling RF ต้องดูคลิปนี้!",views:10566,h3:16.7,r1m:14.1,wa:7.1},
+      {title:"เลือกสิ่งที่ใช่ อัลเทอร่า Prime หรือ SPT?",views:9761,h3:21.7,r1m:7.6,wa:5.2},
+      {title:"อัลเทอร่า PRIME 200 Line ยกแค่ไหนมาดูกัน",views:8311,h3:20.3,r1m:0.0,wa:3.9},
+      {title:"แท็กเพื่อนซี้! ชวนกันมาดูดีมั่นใจขึ้น",views:6413,h3:26.3,r1m:10.9,wa:6.2},
+      {title:"Ready for a New Journey? KVK Clinic",views:4432,h3:19.2,r1m:4.0,wa:4.3},
+      {title:"ถามไว ตอบไว 10 คำถามเรื่องเม็ดสีผิว ฝ้า",views:3170,h3:17.9,r1m:10.2,wa:7.7},
+      {title:"Your Privilege Passport to Confidence",views:3041,h3:7.0,r1m:0.0,wa:1.8},
+      {title:"ทำไมมาทำเอาตอนนี้!!! เสริมจมูก",views:3001,h3:21.2,r1m:0.0,wa:4.6},
+      {title:"เก็บตก WonGalaAwards 2026 The Phantom of Precision",views:2934,h3:24.7,r1m:6.2,wa:5.5},
+      {title:"#8PointFacelift ปรับมิติหน้าให้เป๊ะกว่าเดิม",views:2838,h3:22.6,r1m:18.8,wa:14.2},
+      {title:"The Secret Behind the Glow: Hydrogel Mask",views:2708,h3:16.7,r1m:3.8,wa:3.5},
+      {title:"ทำไมหลายคนชอบทรงจมูกสโลปปลายพุ่ง",views:2681,h3:27.2,r1m:16.9,wa:8.5},
+      {title:"โดนแอบถ่ายยังรอด เพราะดูแลตัวเองมาดี",views:2675,h3:27.2,r1m:0.0,wa:5.6},
+      {title:"ความลับผิวสวยจากงาน Haus of Allure",views:2590,h3:22.3,r1m:5.4,wa:4.9},
+      {title:"KVKClinic ส่งตรงความสวยจากลิสบอน",views:2547,h3:20.4,r1m:12.7,wa:5.8},
+      {title:"หน้าดูมีอายุก่อนวัย เพราะสิ่งนี้",views:2478,h3:23.7,r1m:11.1,wa:5.7},
+      {title:"สัญญาณเตือนว่าเริ่มเยอะเกินไปแล้ว",views:2449,h3:32.2,r1m:9.9,wa:7.9},
+      {title:"หยุดวงจรหน้าแน่นเกินเบอร์!",views:2433,h3:20.5,r1m:5.6,wa:5.5},
+      {title:"Favorite โปรแกรมนี้ เบื้องหลังผิวหน้าแน่น ฟู",views:2402,h3:17.5,r1m:0.0,wa:6.4},
+      {title:"สายสุขภาพต้องจัด KVK มอบเอกสิทธิ์คนสวมกาวน์",views:2307,h3:25.5,r1m:0.0,wa:4.0},
+      {title:"ผ่าตัดเสริมจมูกควรเลือกแบบไหนดี",views:2098,h3:21.6,r1m:19.4,wa:6.2},
+      {title:"เครื่องดีแค่ไหนก็เอาไม่อยู่ ถ้าขาด AfterCare",views:2079,h3:18.5,r1m:12.7,wa:7.0},
+      {title:"เทรนด์ใหม่ ลงลิฟท์ คืออะไร?",views:2030,h3:21.8,r1m:16.5,wa:9.2},
+      {title:"เบื้องหลังผลลัพธ์ที่ตอบโจทย์ ทีมแพทย์ไม่หยุดเรียนรู้",views:1734,h3:19.0,r1m:9.4,wa:5.6},
+      {title:"หลุมสิว แต่ละประเภท ดูแลเหมือนหรือต่างกัน",views:1674,h3:24.0,r1m:10.4,wa:12.4},
+      {title:"เทรนด์ผิวโลกเปลี่ยนไป KVK ไม่เคยหยุดนิ่ง",views:1199,h3:16.3,r1m:6.2,wa:4.4}
+    ].map(i => ({...i, dept: determineDept(i.title)}));
+
+    // 2. IG Data (65 ITEMS)
+    const igRaw = [
+      {title:"เลือกสิ่งที่ใช่ ให้เหมาะกับผิวคุณ 🤔",type:"Reels",views:484,reach:314,eng:4,er:1.27},
+      {title:"จะรักษาก็ต้องรู้สาเหตุ! ใครมีรอยโรคที่ผิวแบบไหน มา...",type:"Reels",views:378,reach:267,eng:5,er:1.87},
+      {title:"5.5 MASSIVE SALE จัดหนัก จัดเต็ม! (1)",type:"Slide",views:419,reach:154,eng:1,er:0.65},
+      {title:"5.5 MASSIVE SALE จัดหนัก จัดเต็ม! (2)",type:"Slide",views:353,reach:125,eng:4,er:3.2},
+      {title:"5.5 MASSIVE SALE จัดหนัก จัดเต็ม! (3)",type:"Slide",views:361,reach:139,eng:3,er:2.16},
+      {title:"โปรแกรมอัลเทอร่า PRIME 200 Line... ยกแค่ไหนมาดูกัน...",type:"Reels",views:267,reach:199,eng:3,er:1.51},
+      {title:"🩺𝐒𝐏𝐄𝐂𝐈𝐀𝐋 𝐓𝐇𝐀𝐍𝐊𝐒 𝐅𝐎𝐑 𝐇𝐄𝐀𝐋𝐓𝐇𝐂𝐀𝐑𝐄 𝐇𝐄𝐑𝐎𝐄𝐒!",type:"Image",views:272,reach:158,eng:0,er:0.0},
+      {title:"🩺สายสุขภาพต้องจัด! 𝐊𝐕𝐊 𝐂𝐥𝐢𝐧𝐢𝐜 มอบเอกสิทธิ์เพื่อคนส...",type:"Reels",views:379,reach:271,eng:4,er:1.48},
+      {title:"ตาที่เคยปรือไม่เท่ากัน ปรับแล้วดูสดใสขึ้นชัดเจน 👁️...",type:"Image",views:307,reach:178,eng:0,er:0.0},
+      {title:"The Secret Behind the Glow: Get Up & Glow Hydrogel...",type:"Reels",views:368,reach:281,eng:8,er:2.85},
+      {title:"หน้าดูมีอายุก่อนวัย เพราะสิ่งนี้ !!!",type:"Reels",views:368,reach:288,eng:1,er:0.35},
+      {title:"KVKClinic ส่งตรงความสวยจากลิสบอน ! ✈️",type:"Reels",views:399,reach:295,eng:6,er:2.03},
+      {title:"✨ หยุดวงจรหน้าแน่นเกินเบอร์!",type:"Reels",views:408,reach:290,eng:7,er:2.41},
+      {title:"จากหน้าอกที่ดูเรียบ เนินไม่ชัด วันนี้มีทรงที่พอดีต...",type:"Image",views:351,reach:205,eng:1,er:0.49},
+      {title:"ทำไมหลายคนชอบทรงจมูกสโลปปลายพุ่ง",type:"Reels",views:279,reach:206,eng:2,er:0.97},
+      {title:"ยกชั้นตาให้เปิดชัด ดวงตาดูสดใสขึ้นทันที ✨",type:"Image",views:272,reach:185,eng:0,er:0.0},
+      {title:"#เช็กด่วน! สัญญาณเตือนว่าคุณเริ่ม ‘เยอะ’ เกินไปแล้...",type:"Reels",views:289,reach:208,eng:1,er:0.48},
+      {title:"สวยแบบพอดี... ไม่จำเป็นต้อง “ล้น”",type:"Slide",views:803,reach:328,eng:4,er:1.22},
+      {title:"THE NEW CHAPTER BEGINS 2026 (1)",type:"Image",views:481,reach:225,eng:1,er:0.44},
+      {title:"THE NEW CHAPTER BEGINS 2026 (2)",type:"Image",views:805,reach:352,eng:13,er:3.69},
+      {title:"THE NEW CHAPTER BEGINS 2026 (3)",type:"Image",views:338,reach:162,eng:1,er:0.62},
+      {title:"🥤 Double Refreshment! สองเมนูใหม่ที่พร้อมเปลี่ยนวั...",type:"Image",views:288,reach:165,eng:0,er:0.0},
+      {title:"ถามไว ตอบไว! กับ 10 คำถามเรื่องเม็ดสีผิว",type:"Reels",views:449,reach:294,eng:6,er:2.04},
+      {title:"🧐เหตุผลที่หลายคนไม่กล้าเข้าคลินิก...",type:"Reels",views:1178,reach:728,eng:29,er:3.98},
+      {title:"💙 KVK GOLDEN PASS “New Journey”",type:"Image",views:501,reach:267,eng:3,er:1.12},
+      {title:"เปลี่ยนจากตาหลบใน เป็นดวงตาที่ดูสดใสขึ้นแบบเห็นได้...",type:"Image",views:458,reach:253,eng:0,er:0.0},
+      {title:"จากจมูกที่ดูแบนและไม่มีมิติ วันนี้มุมข้างดูละมุนขึ...",type:"Image",views:363,reach:220,eng:0,er:0.0},
+      {title:"ใบหน้าที่เริ่มหย่อนคล้อยตามวัย วันนี้กลับมาดูสดใสแ...",type:"Image",views:472,reach:293,eng:2,er:0.68},
+      {title:"📢 ปักหมุดด่วน! 15 พ.ค. นี้ มีนัดกันที่ KVK Clinic ...",type:"Reels",views:291,reach:210,eng:3,er:1.43},
+      {title:"Ready for a New Journey? ปลายทางความสวยรอคุณอยู่ที...",type:"Reels",views:464,reach:291,eng:11,er:3.78},
+      {title:"กรอบหน้ากลับมาอีกครั้ง! ✨✨ แค่เอาเหนียงออกก็เหมือน...",type:"Image",views:336,reach:189,eng:0,er:0.0},
+      {title:"💡ก่อนตัดสินใจทำ Microneedling RF... ต้องดูคลิปนี้!...",type:"Reels",views:291,reach:192,eng:3,er:1.56},
+      {title:"ความลับผิวสวยที่ได้จากงาน Haus of Allure...",type:"Reels",views:459,reach:338,eng:21,er:6.21},
+      {title:"🚀KVK WISDOM | มอบสิทธิพิเศษให้คุณดูแลตัวเอง",type:"Slide",views:598,reach:248,eng:3,er:1.21},
+      {title:"โปรแกรม Morphues 8 Prime #ดีกว่าเดิมยังไง!!!!",type:"Image",views:413,reach:221,eng:4,er:1.81},
+      {title:"🌟 𝐑𝐞𝐯𝐞𝐚𝐥 𝐘𝐨𝐮𝐫 𝐁𝐞𝐬𝐭 𝐒𝐤𝐢𝐧: 𝟑 ทางเลือกอัปเกรดผิวสวยที...",type:"Image",views:365,reach:186,eng:1,er:0.54},
+      {title:"โดนแอบถ่ายยังรอด เพราะดูแลตัวเองมาดี!",type:"Reels",views:364,reach:279,eng:11,er:3.94},
+      {title:"จากไม่มีทรง ใส่อะไรก็ดูไม่เต็ม สู่ลุคที่แต่งตัวได้...",type:"Image",views:246,reach:141,eng:0,er:0.0},
+      {title:"#8PointFacelift ปรับมิติหน้าให้เป๊ะกว่าเดิม!",type:"Reels",views:471,reach:285,eng:6,er:2.11},
+      {title:"เปลี่ยนมุมข้างให้ดูละมุนขึ้น 👃✨",type:"Image",views:247,reach:134,eng:0,er:0.0},
+      {title:"แท็กเพื่อนซี้ด่วน! 👇 มิตรภาพที่แท้จริง",type:"Reels",views:327,reach:226,eng:5,er:2.21},
+      {title:"ล็อคความมั่นใจแบบคูณสอง! (1)",type:"Image",views:278,reach:150,eng:0,er:0.0},
+      {title:"ล็อคความมั่นใจแบบคูณสอง! (2)",type:"Image",views:289,reach:168,eng:1,er:0.6},
+      {title:"🔐ปลดล็อกความลับผิวดูอ่อนเยาว์และมีมิติ",type:"Image",views:335,reach:168,eng:2,er:1.19},
+      {title:"จากตาชั้นเดียวที่ดูเรียบ 👁️👁️ วันนี้กลายเป็นลุคหมว...",type:"Image",views:323,reach:183,eng:0,er:0.0},
+      {title:"ทรงสวยกำลังดี ดูละมุนแบบธรรมชาติ",type:"Image",views:245,reach:140,eng:0,er:0.0},
+      {title:"หยุดความกังวลเรื่องผิว แล้วปล่อยให้โปรแกรม Red Tou...",type:"Image",views:293,reach:159,eng:4,er:2.52},
+      {title:"บูสต์ผิวแน่น...แบบไม่ต้องพักหน้า",type:"Slide",views:317,reach:131,eng:4,er:3.05},
+      {title:"จากรูปร่างที่ดูอวบและเหนื่อยง่าย วันนี้กลับมามั่นใ...",type:"Image",views:260,reach:143,eng:0,er:0.0},
+      {title:"#ทำไมต้องให้โปรแกรมนี้เป็นFavorite",type:"Reels",views:235,reach:172,eng:5,er:2.91},
+      {title:"ครบ 3 เดือนแล้วกับชั้นตาใหม่ ✨ แต่งหน้าง่ายขึ้น มั...",type:"Image",views:193,reach:104,eng:0,er:0.0},
+      {title:"เทรนด์ใหม่มาแรงจนฉุดไม่อยู่! #ลงลิฟท์ คืออะไร?",type:"Reels",views:259,reach:175,eng:3,er:1.71},
+      {title:"เบื้องหลังการดูแลที่ตอบโจทย์ คือการเรียนรู้อย่างต่...",type:"Slide",views:380,reach:140,eng:6,er:4.29},
+      {title:"เบื้องหลังผลลัพธ์ที่ตอบโจทย์ คือการไม่หยุดเรียนรู้...",type:"Reels",views:257,reach:162,eng:2,er:1.23},
+      {title:"เครื่องดีแค่ไหนก็เอาไม่อยู่... ถ้าขาดสิ่งนี้!",type:"Reels",views:235,reach:159,eng:1,er:0.63},
+      {title:"หน้าดูง่วง ไม่ใช่เพราะนอนน้อย แต่อาจเป็นเพราะ “กล้...",type:"Image",views:261,reach:164,eng:0,er:0.0},
+      {title:"#หลุมสิว แต่ละประเภท ดูแลเหมือนหรือต่างกันอย่างไร❓...",type:"Reels",views:382,reach:246,eng:15,er:6.1},
+      {title:"แค่ปรับทรงใหม่ให้พอดีกับตัว ช่วยให้ทุกลุคดูดีขึ้นแ...",type:"Image",views:196,reach:101,eng:0,er:0.0},
+      {title:"📢 𝐏𝐀𝐘𝐃𝐀𝐘 𝐃𝐄𝐀𝐋𝐒! สวยคุ้มส่งท้ายเดือน",type:"Slide",views:318,reach:113,eng:1,er:0.88},
+      {title:"ตาที่เคยปรือ ดูไม่เท่ากัน แค่แก้ไขถูกจุด ลุคก็เปลี...",type:"Image",views:133,reach:79,eng:0,er:0.0},
+      {title:"เจาะลึกเทรนด์และเทคโนโลยีความงามยุคใหม่",type:"Slide",views:671,reach:260,eng:14,er:5.38},
+      {title:"เก็บเหนียง เปลี่ยนกรอบหน้า ✨ หน้าดูเรียวขึ้น",type:"Image",views:197,reach:106,eng:0,er:0.0},
+      {title:"เทรนด์ผิวโลกเปลี่ยนไป และ KVK Clinic ไม่เคยหยุดนิ่...",type:"Reels",views:158,reach:103,eng:5,er:4.85},
+      {title:"แค่เปลี่ยนชั้นตา ลุคก็ดูละมุนขึ้นทันที ✨",type:"Image",views:285,reach:175,eng:0,er:0.0},
+      {title:"ผ่าตัดเสริมจมูกควรเลือกแบบไหนดี",type:"Reels",views:255,reach:215,eng:2,er:0.93}
+    ];
+    const igVidData = igRaw.filter(i => i.type === "Reels");
+    const igImgData = igRaw.filter(i => i.type !== "Reels");
+
+    // 3. YT Data (83 ITEMS)
+    const ytRaw = [
+      {type:"Long",title:"เจาะลึกนวัตกรรม Skin Quality ที่กำลังมาแรง! เลือกแบบไหนให้ 'ผิวคุณดูดี' ที่สุด? 🤔",views:1447680,pct:15.39,ctr:3.3,subs:63},
+      {type:"Long",title:"ProgramSylfirm กับ ProgramVirtue ต่างกันอย่างไร ? MICRONEEDLING RF แบบล้วงลึก ฉบับ KVKClinic ?”",views:280760,pct:4.57,ctr:9.39,subs:0},
+      {type:"Long",title:"เล่าละเอียด Program UltherapySPT (รุ่นเดิม)VS PRIME (รุ่นใหม่) ต่างกันอย่างไร?เห็นผลเท่ากันจริงไหม?",views:1063317,pct:65.89,ctr:2.07,subs:0},
+      {type:"Long",title:"ไขความจริงของ Ultherapy ไม่ได้ต่างกับเครื่องอื่นๆ เลย จริงมั้ย?? แบบ Evidence-base",views:538911,pct:27.7,ctr:3.28,subs:1},
+      {type:"Long",title:"ProgramPicolaser ดีจริงมั้ย ทำแล้วยิงดำ ยิ่งหน้าบางมั้ย? รักษาฝ้าได้จริงมั้ย ลองฟังก่อนทำ",views:264565,pct:13.26,ctr:4.13,subs:2},
+      {type:"Long",title:"หน้าหด-ยก แบบสาวเกาหลี🇰🇷 ส่งตรงถึงที่นี่ KVKCenter Clinic ไม่ต้องบินไกล✈️",views:332848,pct:54.88,ctr:0.0,subs:0},
+      {type:"Long",title:"ไขรหัสลับ Program XERF 💡นวัตกรรมสองความถี่ RF รุ่นใหม่จาก KVK Clinic ช่วยยกกระชับหน้า ลดเหนียง",views:54166,pct:2.45,ctr:8.67,subs:3},
+      {type:"Long",title:"เจาะลึก! เทคโลยี Dual Frequency Monopolar RF (โปรแกรม Xerf) ที่ KVKVClinic",views:48349,pct:5.18,ctr:9.2,subs:5},
+      {type:"Long",title:"รวม 5 คำถาม ! ก่อนตัดสินใจฉีดโปรแกรมฟิลเลอร์ เพราะเรามีหน้าเดียว",views:231604,pct:30.1,ctr:2.24,subs:0},
+      {type:"Long",title:"program RedTouch Pro เลเซอร์สีแดง 675 nm คืออะไร? ผิวสวย หน้าใสแบบไม่ต้องพักฟื้น ทำได้จริงหรือ ?",views:55176,pct:2.19,ctr:10.44,subs:3},
+      {type:"Long",title:"เลเซอร์ยางลบ DermaV เลเซอร์ปรับผิว รอยดำ รอยแดง เส้นเลือด ด้วยแสงสีเขียว",views:329871,pct:1.25,ctr:0.0,subs:0},
+      {type:"Long",title:"เจาะลึก! PROGRAM DENSITY คืออะไร? ยกกระชับหน้าด้วย Mono + Bi Polar RF ดีจริงไหม?",views:113848,pct:12.06,ctr:8.6,subs:5},
+      {type:"Long",title:"Oligio นวัตกรรมยกกระชับใหม่ ผิวสวยแบบคอมพลีท Lift Up! Pull Up! Fill Up!",views:75660,pct:29.01,ctr:0.0,subs:0},
+      {type:"Long",title:"เจาะลึก⚡️Program Ultherapy รุ่นใหม่ VS รุ่นเดิม ต่างกันอย่างไร? ฉบับ KVKclinic",views:50307,pct:2.98,ctr:2.67,subs:1},
+      {type:"Long",title:"ทำไมต้องยกกระชับ และจะเลือกเครื่องยกกระชับแบบไหนดี? 4ข้อสำคัญการเลือกเครื่องยกกระชับ",views:26060,pct:21.73,ctr:2.03,subs:0},
+      {type:"Long",title:"Program OGX & Program OG ดีกว่าหรือต่างกันอย่างไร?",views:27731,pct:21.76,ctr:3.27,subs:2},
+      {type:"Long",title:"เหตุผล ! ทำไมต้องสแกนหน้าก่อนทำหัตถการ",views:2186,pct:24.61,ctr:3.17,subs:0},
+      {type:"Short",title:"สวยคนเดียวไม่พอ ต้องคุ้มยกแก๊งค์ 👯‍♀️✨#KVKClinic #DrKoong #เพื่อนชวนเพื่อน",views:1677,pct:35.6,ctr:0.49,subs:0},
+      {type:"Short",title:"หน้าเปียกแป้งไม่ว่า แต่หน้าอย่าพัง!💦 #kvkclinic #drkoong #drjade",views:2380,pct:45.95,ctr:0.62,subs:1},
+      {type:"Long",title:"เช็กด่วน! 3 สัญญาณเตือนว่าหน้าคุณเริ่ม 'ล้น' (Overfilled Syndrome)",views:1047,pct:41.81,ctr:2.92,subs:0},
+      {type:"Long",title:"“ไขความลับ! 🔓 MICRONEEDLING RF แบบล้วงลึก ทุกยี่ห้อ แบบ KVKClinic ?”",views:473,pct:51.62,ctr:15.13,subs:3},
+      {type:"Long",title:"รู้หมอรู้เรา ! เลือกโปรแกรม Ulthera ยังไงไม่ให้พลาดก่อนทำ #kvkclinic",views:415,pct:52.39,ctr:0.0,subs:0},
+      {type:"Long",title:"ความรู้โบTOX แต่ละยี่ห้อ ก็มีข้อดีที่แตกต่างกันไป หมอกุ้งมาบอกว่ามันดียังไงจ้า",views:368,pct:18.28,ctr:0.0,subs:0},
+      {type:"Long",title:"เจาะลึกการทำงานของหมอกุ้ง KVK Center Clinic กับการฝ่าฟันขึ้นเป็นที่หนึ่งในใจชาวอีสาน",views:205,pct:91.77,ctr:1.86,subs:0},
+      {type:"Long",title:"สิ้นสุดการรอคอย ! เตรียมพบ โปรแกรม XERF ที่ KVKCLINIC",views:211,pct:99.7,ctr:6.23,subs:2},
+      {type:"Long",title:"เคลียร์ชัดปัญหา Overfill EP.1 #KVKClinic #DrKoong #หมอเจด #Overfill",views:750,pct:33.65,ctr:2.29,subs:1},
+      {type:"Long",title:"หมอกุ้งมาเฉลย “รอยโรคผิวยอดฮิต” #KVKClinic #DrKoong #ถามไวตอบไวกับหมอกุ้ง",views:414,pct:24.25,ctr:1.38,subs:1},
+      {type:"Long",title:"เคลียร์ชัดปัญหา Overfill EP.2 #KVKClinic #DrKoong #หมอเจด #Overfill",views:464,pct:19.8,ctr:3.69,subs:0},
+      {type:"Long",title:"อัปเดตเทรนยกกระชับปี 2025 กับคุณหมอกุ้ง KVKCenter Clinic",views:164,pct:98.54,ctr:0.0,subs:0},
+      {type:"Long",title:"ไขความลับ โปรแกรม 𝗠𝗣𝗧 🔓 เทคนิคยกกระชับที่ต้องรู้ก่อนตัดสินใจทำ",views:158,pct:90.02,ctr:3.56,subs:0},
+      {type:"Long",title:"คลินิกเป็นดอกเห็ด ทำไมต้องมาที่นี่ประจำ? ลองฟังกันค่ะ!!",views:132,pct:87.69,ctr:0.0,subs:0},
+      {type:"Long",title:"ทำเลเซอร์แล้วเป็นจุดขาว? อย่าเพิ่งตกใจ! มาเช็ก 3 สาเหตุหลักกันค่ะ 🔎 #kvkclinic",views:298,pct:56.84,ctr:1.08,subs:0},
+      {type:"Long",title:"10 คำถามเรื่องเม็ดสีผิวที่พบบ่อยที่สุด 💬 #KVKClinic #DrKoong #ปัญหาเม็ดสีผิว",views:628,pct:25.95,ctr:3.74,subs:0},
+      {type:"Long",title:"คุณหมอกุ้งได้รับเกียรติเป็นแพทย์ 1 ใน 10 ของไทย ที่ได้รับเชิญเข้าร่วมงาน Oligio Summer Night",views:125,pct:99.17,ctr:0.0,subs:0},
+      {type:"Long",title:"🤔 Combine Program: เลือกใช้ Monopolar RF หรือ Ultrasound Focus ก่อนดี?",views:130,pct:95.09,ctr:3.95,subs:0},
+      {type:"Long",title:"ฉีดฟิลเลอร์แล้วบวม ปกติหรืออันตราย? เช็กให้ชัวร์ก่อนกังวล!",views:116,pct:51.49,ctr:3.28,subs:0},
+      {type:"Long",title:"KVKClinic ยกทีมหมอ เปิดตัว Program Ultherapy Prime",views:112,pct:99.25,ctr:2.56,subs:0},
+      {type:"Short",title:"ทำไมถึงเลือกทำ Thermage FLX ที่นี่ มาฟังเสียงตอบรับจากลูกค้าของเรากันค่า",views:111,pct:99.13,ctr:0.0,subs:0},
+      {type:"Long",title:"Program RedTouch Pro ดีจริงไหม? เหตุผลอะไรที่หลายคนเลือกทำซ้ำ !",views:108,pct:94.19,ctr:4.35,subs:0},
+      {type:"Short",title:"ทำไม Program Ultherapy ทำไลน์ไม่เท่ากัน ถึงสวยกว่า?",views:102,pct:96.58,ctr:0.0,subs:0},
+      {type:"Short",title:"👩‍⚕️ รีวิวจริงจากใจ 💬 ยกกระชับ + ฟื้นฟูผิว แบบครบสูตร ด้วย Ulthera Prime + Oligio",views:100,pct:99.37,ctr:0.0,subs:0},
+      {type:"Long",title:"𝗞𝗩𝗞 𝗖𝗹𝗶𝗻𝗶𝗰 นำกว่า 𝟭 ก้าวเสมอ ในงานประชุมระดับนานาชาติ 𝗜𝗖𝗟𝗔𝗦 𝟮𝟬𝟮𝟱 🌟",views:98,pct:99.54,ctr:0.0,subs:0},
+      {type:"Long",title:"เจาะลึกปัญหาฝ้า ⚡ ทำไมเลเซอร์รักษาฝ้า ยารักษาฝ้า แต่ฝ้ายังกลับมาอีก ? โปรแกรม PICOLASER ช่วยได้ไหม ?",views:98,pct:27.44,ctr:7.14,subs:0},
+      {type:"Long",title:"KVKLOVER รีวิวแบบไม่อวย ! แค่คุณหมอก็ชนะแล้ว",views:95,pct:99.75,ctr:0.0,subs:0},
+      {type:"Long",title:"สงสัยจุดไหน... ถามหมอมาได้เลย! 💬 #kvkclinic #drkoong #drjade",views:416,pct:29.95,ctr:2.89,subs:0},
+      {type:"Long",title:"🇰🇷 บินลัดฟ้าเจาะลึก! สูตร “เซตผิวดารา” ที่คนไทยบินข้ามประเทศไปทำถึงเกาหลี!",views:87,pct:99.95,ctr:0.0,subs:0},
+      {type:"Long",title:"ล้วงสูตรลับ ! โปรแกรม Glass Skin เทรนด์ฮิตจากโซล ไม่ต้องบินไกลก็อินก่อนใคร",views:86,pct:99.96,ctr:7.69,subs:0},
+      {type:"Short",title:"💬เสียงรีวิวจริง 📢 เลือก KVK Clinic เพราะรู้ว่าทุกขั้นตอนถูกออกแบบมาเพื่อเรา",views:86,pct:99.89,ctr:0.0,subs:0},
+      {type:"Short",title:"แสงสีแดง โปรแกรม redtouch Pro 675 nm เหมาะกับใคร? ก่อนจะทำ",views:123,pct:78.42,ctr:5.66,subs:0},
+      {type:"Long",title:"หยุดยิงแบบเดิมๆ ถ้ายังไม่รู้สิ่งนี้! 🛑 #kvkclinic #drkoong #drjade",views:712,pct:18.61,ctr:1.28,subs:0},
+      {type:"Long",title:"อัปเดตเทคโนโลยีระดับโลกมาเพื่อชาว KVK กับงานประชุม Lutronic's IMCAS ASIA 2024",views:80,pct:99.73,ctr:0.0,subs:0},
+      {type:"Long",title:"Red Light Laser ตอบโจทย์ยังไง ? #KVKClinic #ProgramRedTouchPro",views:286,pct:33.87,ctr:2.02,subs:1},
+      {type:"Long",title:"สิวที่เป็นอยู่...ปกติหรืออันตราย? 🔍 #kvkclinic #drkoong #drjade",views:353,pct:27.3,ctr:1.43,subs:0},
+      {type:"Long",title:"✨อีกหนึ่งก้าวสำคัญที่สะท้อนถึงความมุ่งมั่นและมาตรฐานที่ KVKClinic",views:557,pct:45.31,ctr:0.6,subs:1},
+      {type:"Long",title:"𝗣𝗶𝗰𝗼 𝗣𝗹𝘂𝘀 และ 𝗣𝗶𝗰𝗼 𝗦𝘂𝗿𝗲พร้อมกับคำถามยอดฮิต เครื่องไหนดีกว่ากัน แตกต่างกันยังไง?",views:65,pct:55.14,ctr:7.28,subs:0},
+      {type:"Long",title:"สัญญาณของ Overfilled Syndrome",views:56,pct:33.65,ctr:2.85,subs:0},
+      {type:"Long",title:"ก่อนทำ Microneedling RF ต้องรู้สิ่งนี้! EP.1 💬",views:110,pct:68.64,ctr:4.42,subs:0},
+      {type:"Long",title:"3 สัญญาณสังเกตง่าย ๆ ผิวแบบไหนไม่เริ่ด !#ProgramRedTouchPro",views:186,pct:43.87,ctr:1.64,subs:0},
+      {type:"Long",title:"เปิดใจครั้งแรก !! เห็นผลลัพธ์แล้วอึ้ง #KVKClinic #DrKoong #โปรแกรมUltherapyPrime",views:168,pct:21.12,ctr:1.3,subs:0},
+      {type:"Long",title:"จบสงกรานต์ ผิวไม่จบ !! รวมทริคกู้ผิวใครเป็นแบบไหน เช็คด่วน !",views:613,pct:17.3,ctr:1.16,subs:0},
+      {type:"Long",title:"จบสงกรานต์ ผิวไม่จบ !! EP.2",views:667,pct:20.67,ctr:2.63,subs:0},
+      {type:"Long",title:"โปรแกรมฟิลเลอร์คืออะไร 5 คำถามที่ถูกถามเยอะที่สุด ? BY KVKclinic",views:43,pct:99.15,ctr:0.68,subs:0},
+      {type:"Long",title:"จุดเด่นของ โปรแกรม XTherma #ProgramXTherma",views:317,pct:63.32,ctr:3.46,subs:0},
+      {type:"Long",title:"อัปเดตเทรนด์งานผิว Program Ultherapy เจาะลึกเทคโนโลยี Ultrasound Focus",views:38,pct:48.89,ctr:3.15,subs:1},
+      {type:"Long",title:"ก่อนทำ Microneedling RF ต้องรู้สิ่งนี้! EP.2 💬",views:88,pct:60.38,ctr:2.74,subs:0},
+      {type:"Short",title:"ถุงไขมันใต้ตาคืออะไร ?? #หมอเจด",views:36,pct:75.15,ctr:0.0,subs:0},
+      {type:"Long",title:"KVKCilnic I BigTeamOuting PHU QUOC 2026",views:36,pct:26.49,ctr:1.54,subs:0},
+      {type:"Short",title:"โปรแกรม Doublo New 2.0 เครื่องนี้มีดีอะไร ทำไมฮอตจัง! 🤭",views:161,pct:65.18,ctr:2.22,subs:0},
+      {type:"Short",title:"“ทำไม KVK Clinic ไม่มีเซลล์?” #ไม่มีเซลล์",views:129,pct:100.24,ctr:4.18,subs:0},
+      {type:"Long",title:"“The Runway We Walk Together” 👠✨ เป็นรางวัลที่ 4 ของปีนี้",views:183,pct:176.08,ctr:1.35,subs:0},
+      {type:"Long",title:"2026 นี้... เตรียมพบกับนิยามใหม่ของความมั่นใจที่ KVK Clinic!",views:34,pct:33.72,ctr:2.99,subs:0},
+      {type:"Long",title:"Alma Academy 2026 เทรนด์นี้กำลังจะมาไทยเร็ว ๆ นี้",views:160,pct:31.28,ctr:3.02,subs:0},
+      {type:"Long",title:"29 มีนาคม 2569",views:260,pct:47.36,ctr:0.28,subs:0},
+      {type:"Short",title:"ปัญหาผิวแบบนี้... ต้องรีบแก้! ✋ ตัวช่วยกู้ผิวพังให้ปังกว่าเดิม🫶✨",views:179,pct:40.2,ctr:1.49,subs:0},
+      {type:"Long",title:"เครื่องเดียวเอาอยู่ทั้งผิวแน่น + หน้าเป๊ะ #ProgramXTherma",views:147,pct:27.63,ctr:1.61,subs:0},
+      {type:"Long",title:"รักษาหลุมสิวไม่ให้พลาด ด้วย 5 ขั้นตอนที่ควรรู้ ฉบับ KVKCLINIC",views:30,pct:62.79,ctr:6.29,subs:0},
+      {type:"Long",title:"เก็บตกโมเมนต์ 🎭 WonGalaAwards 2026",views:180,pct:14.66,ctr:5.19,subs:0},
+      {type:"Short",title:"200 Line = เปลี่ยนแค่ไหน? #UltheraPrime #รีวิวจริง",views:180,pct:47.75,ctr:2.2,subs:0},
+      {type:"Long",title:"Route ใหม่ ใช่กว่าที่เคย 🫶🏻 ยิ่งชอปยิ่งคุ้ม #KVKgoldenpass",views:53,pct:319.48,ctr:3.27,subs:0},
+      {type:"Long",title:"คนถามเยอะมากช่วงนี้ 👀 เทรนด์ลงลิฟต์ คืออะไร ? 💖 #ลงลิฟท์",views:45,pct:54.09,ctr:6.04,subs:0},
+      {type:"Long",title:"อัปเดตเทรนด์งานผิวระดับ Pinnacle! ✨ หมอกุ้งพาบุกงาน TheOGXMasterclass 👩🏻‍⚕️",views:37,pct:46.59,ctr:4.03,subs:0},
+      {type:"Short",title:"อยากผิวฉ่ำวาวแบบไม่ต้องรอนาน... โปรแกรม Profhi-Skin คือคำตอบ!",views:183,pct:281.62,ctr:1.45,subs:0},
+      {type:"Short",title:"26 มีนาคม 2569",views:98,pct:59.57,ctr:0.72,subs:0}
+    ];
+    const ytLongData = ytRaw.filter(i => i.type === "Long");
+    const ytShortData = ytRaw.filter(i => i.type === "Short");
+
+    // ================= STATE & LOGIC =================
+    let curPlat = 'fb';
+    let fbSub = 'img', igSub = 'vid', ytSub = 'long';
+    let fbState = { dept: 'all', grade: 'all', search: '', sort: 'views', asc: false };
+    let igState = { grade: 'all', search: '', sort: 'reach', asc: false };
+    let ytState = { grade: 'all', search: '', sort: 'views', asc: false };
+
+    function switchPlatform(p) {
+      curPlat = p;
+      ['fb','ig','yt'].forEach(x => {
+        document.getElementById(`tab-${x}`).className = x===p ? `plat-tab active-${x} px-6 py-2.5 text-sm rounded-md cursor-pointer` : `plat-tab inactive px-6 py-2.5 text-sm rounded-md cursor-pointer border border-slate-200`;
+        document.getElementById(`plat-${x}`).style.display = x===p ? 'block' : 'none';
+      });
+      if(p==='fb') renderFb(); if(p==='ig') renderIg(); if(p==='yt') renderYt();
+    }
+
+    function switchFbSub(sub) {
+      fbSub = sub;
+      document.getElementById('fb-sub-img').className = sub==='img' ? 'pb-2 px-4 text-sm font-bold text-blue-600 border-b-2 border-blue-600 cursor-pointer' : 'pb-2 px-4 text-sm font-medium text-slate-500 hover:text-slate-800 cursor-pointer';
+      document.getElementById('fb-sub-vid').className = sub==='vid' ? 'pb-2 px-4 text-sm font-bold text-blue-600 border-b-2 border-blue-600 cursor-pointer' : 'pb-2 px-4 text-sm font-medium text-slate-500 hover:text-slate-800 cursor-pointer';
+      renderFb();
+    }
+    
+    function switchIgSub(sub) {
+      igSub = sub;
+      document.getElementById('ig-sub-vid').className = sub==='vid' ? 'pb-2 px-4 text-sm font-bold text-pink-600 border-b-2 border-pink-600 cursor-pointer' : 'pb-2 px-4 text-sm font-medium text-slate-500 hover:text-slate-800 cursor-pointer';
+      document.getElementById('ig-sub-img').className = sub==='img' ? 'pb-2 px-4 text-sm font-bold text-pink-600 border-b-2 border-pink-600 cursor-pointer' : 'pb-2 px-4 text-sm font-medium text-slate-500 hover:text-slate-800 cursor-pointer';
+      renderIg();
+    }
+
+    function switchYtSub(sub) {
+      ytSub = sub;
+      document.getElementById('yt-sub-long').className = sub==='long' ? 'pb-2 px-4 text-sm font-bold text-red-600 border-b-2 border-red-600 cursor-pointer' : 'pb-2 px-4 text-sm font-medium text-slate-500 hover:text-slate-800 cursor-pointer';
+      document.getElementById('yt-sub-short').className = sub==='short' ? 'pb-2 px-4 text-sm font-bold text-red-600 border-b-2 border-red-600 cursor-pointer' : 'pb-2 px-4 text-sm font-medium text-slate-500 hover:text-slate-800 cursor-pointer';
+      renderYt();
+    }
+
+    function sortData(plat, col) {
+      let st = plat==='fb' ? fbState : plat==='ig' ? igState : ytState;
+      if (st.sort === col) st.asc = !st.asc; else { st.sort = col; st.asc = false; }
+      if(plat==='fb') renderFb(); if(plat==='ig') renderIg(); if(plat==='yt') renderYt();
+    }
+
+    // ================= EVALUATORS =================
+    function getFbImgGrade(ctr) {
+      if (ctr >= 3.5) return {g:'A', l:'🟢 Grade A', c:'grade-A', d:'Winning Creative: อัดงบสเกลต่อได้เลย รูปทำงานได้ดีเยี่ยม'};
+      if (ctr >= 1.5) return {g:'B', l:'🟡 Grade B', c:'grade-B', d:'Standard: มาตรฐานทั่วไป เลี้ยงกระแสเพจ Organic ได้'};
+      return {g:'C', l:'🔴 Grade C', c:'grade-C', d:'Danger: คนไถฟีดผ่าน ไม่หยุดนิ้ว ควรพิจารณาเปลี่ยนภาพปก'};
+    }
+    function getFbVidGrade(r1m, h3) {
+      if (h3 < 15) return {g:'C', l:'🔴 Grade C', c:'grade-C', d:'Weak Hook: 3 วินาทีแรกพัง คนไม่หยุดดู ต้องแก้ 3 วิแรกด่วน'};
+      if (r1m >= 10) return {g:'A', l:'🟢 Grade A', c:'grade-A', d:'Champion: สร้าง Trust สูงมาก ยิงแอด Retargeting ปิดการขายได้เลย'};
+      if (r1m >= 5) return {g:'B', l:'🟡 Grade B', c:'grade-B', d:'Potential: เนื้อหากลางๆ พอใช้สร้าง Awareness'};
+      return {g:'C', l:'🔴 Grade C', c:'grade-C', d:'Drop-off: ยืดเยื้อ คนทิ้งกลางคลิป'};
+    }
+    function getIgGrade(er) {
+      if (er >= 2.5) return {g:'A', l:'🟢 Grade A', c:'grade-A', d:'High: กระตุ้นยอด Engagement ได้ดีเยี่ยมเหนือเกณฑ์อุตสาหกรรม'};
+      if (er >= 1.0) return {g:'B', l:'🟡 Grade B', c:'grade-B', d:'Avg: เป็นไปตามมาตรฐาน IG ของคลินิกความงาม'};
+      return {g:'C', l:'🔴 Grade C', c:'grade-C', d:'Low: คอนเทนต์ไม่ดึงดูดฐานฟอลโลเวอร์ ขาดความน่าสนใจทาง Visual'};
+    }
+    function getYtLongGrade(pct, ctr) {
+      if (pct >= 40 && ctr >= 4) return {g:'A', l:'🟢 Grade A', c:'grade-A', d:'Hero Content: คุณภาพสูงมาก นำไปปั้น SEO ต่อได้ในระยะยาว (Evergreen)'};
+      if (pct >= 20) return {g:'B', l:'🟡 Grade B', c:'grade-B', d:'Standard: คุณภาพมาตรฐานวิดีโอให้ความรู้ของแพทย์'};
+      return {g:'C', l:'🔴 Grade C', c:'grade-C', d:'Clickbait: ยอดวิวหลอกตา หรือเนื้อหายืดเยื้อจนคนดูไม่จบ'};
+    }
+    function getYtShortGrade(pct) {
+      if (pct >= 70) return {g:'A', l:'🟢 Grade A', c:'grade-A', d:'Viral: อัลกอริทึมดันขึ้นฟีด Shorts อย่างมีประสิทธิภาพ'};
+      if (pct >= 50) return {g:'B', l:'🟡 Grade B', c:'grade-B', d:'Standard: คุณภาพระดับกลาง รักษาฐานคนดูได้'};
+      return {g:'C', l:'🔴 Grade C', c:'grade-C', d:'Weak: คนปัดทิ้งรวดเร็ว เปิดคลิปไม่น่าสนใจ'};
+    }
+
+    // ================= RENDERERS =================
+    function renderFb() {
+      fbState.dept = document.getElementById('fb-dept').value;
+      fbState.grade = document.getElementById('fb-grade').value;
+      fbState.search = document.getElementById('fb-search').value.toLowerCase();
+      
+      let base = fbSub === 'img' ? fbImgData : fbVidData;
+      let data = base.filter(p => {
+        let ev = fbSub === 'img' ? getFbImgGrade(p.ctr) : getFbVidGrade(p.r1m, p.h3);
+        const mDept = fbState.dept === 'all' || p.dept === fbState.dept;
+        const mSearch = p.title.toLowerCase().includes(fbState.search);
+        const mGrade = fbState.grade === 'all' || ev.g === fbState.grade;
+        return mDept && mSearch && mGrade;
+      });
+
+      data.sort((a,b) => fbState.asc ? a[fbState.sort]-b[fbState.sort] : b[fbState.sort]-a[fbState.sort]);
+      
+      const thead = document.getElementById('fb-thead');
+      const tbody = document.getElementById('fb-tbody');
+      tbody.innerHTML = '';
+
+      if (fbSub === 'img') {
+        thead.innerHTML = `<tr><th class="p-3 w-10 text-center">#</th><th class="p-3 min-w-[250px]">ชื่อโพสต์ภาพนิ่ง</th><th class="p-3 text-right cursor-pointer hover:text-blue-600" onclick="sortData('fb','reach')">Reach ↕</th><th class="p-3 text-right cursor-pointer hover:text-blue-600" onclick="sortData('fb','ctr')">CTR % ↕</th><th class="p-3 text-center">คุณภาพ (Grade)</th></tr>`;
+        data.forEach((p, i) => {
+          let ev = getFbImgGrade(p.ctr);
+          tbody.innerHTML += `<tr class="hover:bg-slate-50 cursor-pointer" onclick='openModal(${JSON.stringify(p)}, "fb-img")'>
+            <td class="p-3 text-center text-slate-400 text-xs">${i+1}</td>
+            <td class="p-3 font-medium text-slate-800 line-clamp-1">${p.title}</td>
+            <td class="p-3 text-right text-slate-600">${p.reach.toLocaleString()}</td>
+            <td class="p-3 text-right font-bold ${ev.g==='A'?'text-emerald-600':ev.g==='C'?'text-rose-600':'text-slate-700'}">${p.ctr.toFixed(2)}%</td>
+            <td class="p-3 text-center"><span class="px-2 py-1 text-[10px] font-semibold rounded ${ev.c}">${ev.l}</span></td>
+          </tr>`;
+        });
+      } else {
+        thead.innerHTML = `<tr><th class="p-3 w-10 text-center">#</th><th class="p-3 min-w-[250px]">ชื่อวิดีโอ</th><th class="p-3 text-right cursor-pointer hover:text-blue-600" onclick="sortData('fb','views')">Views ↕</th><th class="p-3 text-right cursor-pointer hover:text-blue-600" onclick="sortData('fb','h3')">3s Hook% ↕</th><th class="p-3 text-right cursor-pointer hover:text-blue-600" onclick="sortData('fb','r1m')">1m Ret% ↕</th><th class="p-3 text-center">คุณภาพ (Grade)</th></tr>`;
+        data.forEach((p, i) => {
+          let ev = getFbVidGrade(p.r1m, p.h3);
+          tbody.innerHTML += `<tr class="hover:bg-slate-50 cursor-pointer" onclick='openModal(${JSON.stringify(p)}, "fb-vid")'>
+            <td class="p-3 text-center text-slate-400 text-xs">${i+1}</td>
+            <td class="p-3 font-medium text-slate-800 line-clamp-1">${p.title}</td>
+            <td class="p-3 text-right text-slate-600">${p.views.toLocaleString()}</td>
+            <td class="p-3 text-right ${p.h3<15?'text-rose-600':'text-slate-600'}">${p.h3.toFixed(1)}%</td>
+            <td class="p-3 text-right font-bold ${ev.g==='A'?'text-emerald-600':'text-slate-700'}">${p.r1m.toFixed(1)}%</td>
+            <td class="p-3 text-center"><span class="px-2 py-1 text-[10px] font-semibold rounded ${ev.c}">${ev.l}</span></td>
+          </tr>`;
+        });
+      }
+    }
+
+    function renderIg() {
+      igState.grade = document.getElementById('ig-grade').value;
+      igState.search = document.getElementById('ig-search').value.toLowerCase();
+      
+      let base = igSub === 'vid' ? igVidData : igImgData;
+      let data = base.filter(p => {
+        let ev = getIgGrade(p.er);
+        const mSearch = p.title.toLowerCase().includes(igState.search);
+        const mGrade = igState.grade === 'all' || ev.g === igState.grade;
+        return mSearch && mGrade;
+      });
+
+      data.sort((a,b) => igState.asc ? a[igState.sort]-b[igState.sort] : b[igState.sort]-a[igState.sort]);
+      
+      const tbody = document.getElementById('ig-tbody');
+      tbody.innerHTML = '';
+      
+      data.forEach((p, i) => {
+        let ev = getIgGrade(p.er);
+        tbody.innerHTML += `<tr class="hover:bg-slate-50 cursor-pointer" onclick='openModal(${JSON.stringify(p)}, "ig")'>
+          <td class="p-3 text-center text-slate-400 text-xs">${i+1}</td>
+          <td class="p-3 font-medium text-slate-800 line-clamp-1">${p.title}</td>
+          <td class="p-3 text-right text-slate-600">${p.reach.toLocaleString()}</td>
+          <td class="p-3 text-right text-slate-600">${p.views.toLocaleString()}</td>
+          <td class="p-3 text-right text-slate-600">${p.eng}</td>
+          <td class="p-3 text-right font-bold ${ev.g==='A'?'text-emerald-600':ev.g==='C'?'text-rose-600':'text-slate-700'}">${p.er.toFixed(2)}%</td>
+          <td class="p-3 text-center"><span class="px-2 py-1 text-[10px] font-semibold rounded ${ev.c}">${ev.l}</span></td>
+        </tr>`;
+      });
+    }
+
+    function renderYt() {
+      ytState.grade = document.getElementById('yt-grade').value;
+      ytState.search = document.getElementById('yt-search').value.toLowerCase();
+      
+      let base = ytSub === 'long' ? ytLongData : ytShortData;
+      let data = base.filter(p => {
+        let ev = ytSub === 'long' ? getYtLongGrade(p.pct, p.ctr) : getYtShortGrade(p.pct);
+        const mSearch = p.title.toLowerCase().includes(ytState.search);
+        const mGrade = ytState.grade === 'all' || ev.g === ytState.grade;
+        return mSearch && mGrade;
+      });
+
+      data.sort((a,b) => ytState.asc ? a[ytState.sort]-b[ytState.sort] : b[ytState.sort]-a[ytState.sort]);
+      
+      const tbody = document.getElementById('yt-tbody');
+      tbody.innerHTML = '';
+      
+      data.forEach((p, i) => {
+        let ev = ytSub === 'long' ? getYtLongGrade(p.pct, p.ctr) : getYtShortGrade(p.pct);
+        tbody.innerHTML += `<tr class="hover:bg-slate-50 cursor-pointer" onclick='openModal(${JSON.stringify(p)}, "yt")'>
+          <td class="p-3 text-center text-slate-400 text-xs">${i+1}</td>
+          <td class="p-3 font-medium text-slate-800 line-clamp-1">${p.title}</td>
+          <td class="p-3 text-right text-slate-600">${p.views.toLocaleString()}</td>
+          <td class="p-3 text-right font-bold ${ev.g==='A'?'text-emerald-600':ev.g==='C'?'text-rose-600':'text-slate-700'}">${p.pct.toFixed(2)}%</td>
+          <td class="p-3 text-right text-slate-600">${p.ctr.toFixed(2)}%</td>
+          <td class="p-3 text-right text-blue-600">+${p.subs}</td>
+          <td class="p-3 text-center"><span class="px-2 py-1 text-[10px] font-semibold rounded ${ev.c}">${ev.l}</span></td>
+        </tr>`;
+      });
+    }
+
+    // ================= MODAL =================
+    function openModal(data, type) {
+      document.getElementById('modal-title').innerText = data.title;
+      const b = document.getElementById('modal-badge');
+      const m = document.getElementById('modal-metrics');
+      const evBox = document.getElementById('modal-evaluation');
+      const evT = document.getElementById('eval-title');
+      const evD = document.getElementById('eval-desc');
+
+      let ev;
+
+      if(type === 'fb-img') {
+        ev = getFbImgGrade(data.ctr);
+        b.innerText = '🟦 Facebook Image'; b.className = 'inline-block px-2.5 py-1 text-[10px] font-bold uppercase rounded-full mb-2 bg-blue-100 text-blue-700';
+        m.innerHTML = `<div class="bg-slate-50 border p-3 rounded-lg"><p class="text-[10px] text-slate-500 uppercase">Reach</p><p class="text-lg font-bold">${data.reach.toLocaleString()}</p></div>
+                       <div class="bg-slate-50 border p-3 rounded-lg"><p class="text-[10px] text-slate-500 uppercase">CTR</p><p class="text-lg font-bold text-sky-600">${data.ctr.toFixed(2)}%</p></div>
+                       <div class="bg-slate-50 border p-3 rounded-lg"><p class="text-[10px] text-slate-500 uppercase">Photo Clicks</p><p class="text-lg font-bold">${data.photo}</p></div>
+                       <div class="bg-slate-50 border p-3 rounded-lg"><p class="text-[10px] text-slate-500 uppercase">Eng. Rate</p><p class="text-lg font-bold text-emerald-600">${data.er.toFixed(2)}%</p></div>`;
+      } else if (type === 'fb-vid') {
+        ev = getFbVidGrade(data.r1m, data.h3);
+        b.innerText = '🟦 Facebook Video'; b.className = 'inline-block px-2.5 py-1 text-[10px] font-bold uppercase rounded-full mb-2 bg-blue-100 text-blue-700';
+        m.innerHTML = `<div class="bg-slate-50 border p-3 rounded-lg"><p class="text-[10px] text-slate-500 uppercase">Views</p><p class="text-lg font-bold">${data.views.toLocaleString()}</p></div>
+                       <div class="bg-slate-50 border p-3 rounded-lg"><p class="text-[10px] text-slate-500 uppercase">3s Hook</p><p class="text-lg font-bold ${data.h3<15?'text-rose-600':'text-sky-600'}">${data.h3.toFixed(1)}%</p></div>
+                       <div class="bg-slate-50 border p-3 rounded-lg"><p class="text-[10px] text-slate-500 uppercase">1m Retention</p><p class="text-lg font-bold text-emerald-600">${data.r1m.toFixed(1)}%</p></div>
+                       <div class="bg-slate-50 border p-3 rounded-lg"><p class="text-[10px] text-slate-500 uppercase">Watch Avg</p><p class="text-lg font-bold text-slate-700">${data.wa}s</p></div>`;
+      } else if (type === 'ig') {
+        ev = getIgGrade(data.er);
+        b.innerText = `🟪 Instagram ${data.type}`; b.className = 'inline-block px-2.5 py-1 text-[10px] font-bold uppercase rounded-full mb-2 bg-pink-100 text-pink-700';
+        m.innerHTML = `<div class="bg-slate-50 border p-3 rounded-lg"><p class="text-[10px] text-slate-500 uppercase">Reach</p><p class="text-lg font-bold">${data.reach.toLocaleString()}</p></div>
+                       <div class="bg-slate-50 border p-3 rounded-lg"><p class="text-[10px] text-slate-500 uppercase">Views</p><p class="text-lg font-bold">${data.views.toLocaleString()}</p></div>
+                       <div class="bg-slate-50 border p-3 rounded-lg"><p class="text-[10px] text-slate-500 uppercase">Engagements</p><p class="text-lg font-bold text-purple-600">${data.eng}</p></div>
+                       <div class="bg-slate-50 border p-3 rounded-lg"><p class="text-[10px] text-slate-500 uppercase">Eng. Rate</p><p class="text-lg font-bold text-emerald-600">${data.er.toFixed(2)}%</p></div>`;
+      } else if (type === 'yt') {
+        ev = data.type === 'Long' ? getYtLongGrade(data.pct, data.ctr) : getYtShortGrade(data.pct);
+        b.innerText = `🟥 YouTube ${data.type}`; b.className = 'inline-block px-2.5 py-1 text-[10px] font-bold uppercase rounded-full mb-2 bg-red-100 text-red-700';
+        m.innerHTML = `<div class="bg-slate-50 border p-3 rounded-lg"><p class="text-[10px] text-slate-500 uppercase">Views</p><p class="text-lg font-bold">${data.views.toLocaleString()}</p></div>
+                       <div class="bg-slate-50 border p-3 rounded-lg"><p class="text-[10px] text-slate-500 uppercase">% ดูจบ</p><p class="text-lg font-bold text-emerald-600">${data.pct.toFixed(2)}%</p></div>
+                       <div class="bg-slate-50 border p-3 rounded-lg"><p class="text-[10px] text-slate-500 uppercase">CTR (ปก)</p><p class="text-lg font-bold">${data.ctr.toFixed(2)}%</p></div>
+                       <div class="bg-slate-50 border p-3 rounded-lg"><p class="text-[10px] text-slate-500 uppercase">Subs เพิ่ม</p><p class="text-lg font-bold text-blue-600">+${data.subs}</p></div>`;
+      }
+
+      evBox.className = `p-4 rounded-xl border mt-2 ${ev.c.replace('border', 'border bg-opacity-10')}`;
+      evT.innerText = ev.l;
+      evT.className = `text-sm font-bold uppercase tracking-wider mb-2 ${ev.g==='A'?'text-emerald-700':ev.g==='B'?'text-amber-700':'text-rose-700'}`;
+      evD.innerText = ev.d;
+
+      document.getElementById('detail-modal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('detail-modal').classList.remove('active');
+    }
+
+    // Init
+    switchPlatform('fb');
+  </script>
+</body>
+</html>

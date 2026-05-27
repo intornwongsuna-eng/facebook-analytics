@@ -325,6 +325,34 @@ h3 {
   border-bottom: 1px solid var(--line);
 }
 
+.methodology-heading {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.methodology-icon {
+  display: inline-flex;
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.fb-icon {
+  background: var(--fb);
+}
+
+.ig-icon {
+  background: var(--ig);
+}
+
 .methodology-title p,
 .methodology-grid p,
 .panel-heading p {
@@ -361,6 +389,25 @@ h3 {
   margin-bottom: 14px;
 }
 
+.grade-rule {
+  display: grid;
+  grid-template-columns: minmax(210px, auto) minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  min-height: 40px;
+  padding: 7px 12px;
+  border-radius: 6px;
+  background: #f8fafc;
+}
+
+.grade-action {
+  color: #334155;
+  font-size: 0.86rem;
+  font-weight: 720;
+  text-align: right;
+  line-height: 1.35;
+}
+
 .grade-chip,
 .pill {
   display: inline-flex;
@@ -393,6 +440,36 @@ h3 {
 .grade-na {
   color: #475569;
   background: #e2e8f0;
+}
+
+.methodology-note {
+  margin-top: 18px;
+  padding: 14px 16px;
+  border-left: 3px solid currentColor;
+  border-radius: 8px;
+  font-size: 0.84rem;
+  font-weight: 650;
+  line-height: 1.65;
+}
+
+.methodology-note strong {
+  font-weight: 900;
+}
+
+.fb-note {
+  color: #155eef;
+  background: #f1f6ff;
+}
+
+.ig-note {
+  color: var(--ig);
+  background: #fff6fb;
+}
+
+.methodology-footnote {
+  margin-top: 10px !important;
+  color: #475569 !important;
+  font-size: 0.78rem !important;
 }
 
 .sub-tabs {
@@ -635,6 +712,14 @@ tbody tr:hover {
   .methodology-grid > div + div {
     border-top: 1px solid var(--line);
     border-left: 0;
+  }
+
+  .grade-rule {
+    grid-template-columns: 1fr;
+  }
+
+  .grade-action {
+    text-align: left;
   }
 
   .kpi-grid {

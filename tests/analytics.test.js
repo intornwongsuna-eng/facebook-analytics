@@ -54,6 +54,18 @@ const surgeryFb = facebook.rows.find((row) => row.caption.includes("ผ่าต
 assert.ok(surgeryFb, "expected to find Facebook surgery content");
 assert.equal(surgeryFb.departmentId, "surgery", "surgery content should remain in data and be filterable");
 
+const kvkSurgeryVideoExamples = [
+  "ถุงใต้ตาเป็นก้อน",
+  "เหนียงใหญ่คางสองชั้น",
+  "ปักตระกร้าแล้ว",
+  "ลดน้ำหนักแต่เหนียงยังอยู่",
+];
+for (const text of kvkSurgeryVideoExamples) {
+  const match = facebook.rows.find((row) => row.contentType === "video" && row.caption.includes(text));
+  assert.ok(match, `expected to find Facebook video containing ${text}`);
+  assert.equal(match.departmentId, "surgery", `${text} should be classified as surgery`);
+}
+
 const aestheticFb = facebook.rows.find((row) => row.caption.toLowerCase().includes("ultherapy"));
 assert.ok(aestheticFb, "expected to find Facebook aesthetic content");
 assert.equal(aestheticFb.departmentId, "aesthetic");

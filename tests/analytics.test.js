@@ -86,64 +86,100 @@ assert.equal(replayExample.rawAverageWatchRatio, 200, "raw watch ratio should pr
 assert.equal(replayExample.averageWatchRatio, 100, "watch ratio used for grading must be capped at 100");
 assert.equal(replayExample.dataValid, true);
 
+const watchDepthExample = analytics.evaluateFacebookVideo({
+  avgWatchSeconds: 4.5,
+  duration: 30,
+  reach: 400,
+  uniqueThreeSecondViewers: 120,
+  views: 500,
+});
+assert.equal(watchDepthExample.averageWatchRatio, 15, "watch depth should use average watch seconds divided by duration");
+
 const lowViewsExample = analytics.evaluateFacebookVideo({ avgWatchSeconds: 4.5, duration: 12, views: 80 });
 assert.equal(lowViewsExample.dataValid, false, "low-view videos should not be graded");
 
 const marketRows = [
   {
-    benchmarkGroup: "facebook_video_actual_3s",
+    benchmarkGroup: "facebook_video_actual_3s_short",
     dataValid: true,
     threeSecondViewerRate: 35,
+    averageWatchRatio: 22,
   },
   {
-    benchmarkGroup: "facebook_video_actual_3s",
+    benchmarkGroup: "facebook_video_actual_3s_short",
     dataValid: true,
     threeSecondViewerRate: 25,
+    averageWatchRatio: 12,
   },
   {
-    benchmarkGroup: "facebook_video_actual_3s",
+    benchmarkGroup: "facebook_video_actual_3s_short",
     dataValid: true,
-    threeSecondViewerRate: 15,
+    threeSecondViewerRate: 35,
+    averageWatchRatio: 8,
   },
 ];
 analytics.applyMarketGrades(marketRows);
-assert.deepEqual(marketRows.map((row) => row.qualityGrade), ["A", "B", "C"]);
+assert.deepEqual(
+  marketRows.map((row) => row.qualityGrade),
+  ["A", "B", "C"],
+  "short Facebook videos must pass both 3s Hook and Watch Depth",
+);
 
 const longVideoMarketRows = [
   {
-    benchmarkGroup: "facebook_video_actual_3s",
+    benchmarkGroup: "facebook_video_actual_3s_mid",
     dataValid: true,
     duration: 90,
     threeSecondViewerRate: 35,
     oneMinuteContinuationRate: 16,
+    averageWatchRatio: 8,
   },
   {
-    benchmarkGroup: "facebook_video_actual_3s",
+    benchmarkGroup: "facebook_video_actual_3s_mid",
     dataValid: true,
     duration: 90,
     threeSecondViewerRate: 35,
     oneMinuteContinuationRate: 9,
+    averageWatchRatio: 5.5,
   },
   {
-    benchmarkGroup: "facebook_video_actual_3s",
+    benchmarkGroup: "facebook_video_actual_3s_mid",
     dataValid: true,
     duration: 90,
     threeSecondViewerRate: 35,
-    oneMinuteContinuationRate: 5,
+    oneMinuteContinuationRate: 16,
+    averageWatchRatio: 4,
   },
   {
-    benchmarkGroup: "facebook_video_actual_3s",
+    benchmarkGroup: "facebook_video_actual_3s_mid",
     dataValid: true,
     duration: 90,
     threeSecondViewerRate: 35,
     oneMinuteContinuationRate: null,
+    averageWatchRatio: 8,
+  },
+  {
+    benchmarkGroup: "facebook_video_actual_3s_mid",
+    dataValid: true,
+    duration: 90,
+    threeSecondViewerRate: 35,
+    oneMinuteContinuationRate: 16,
+    averageWatchRatio: null,
+  },
+  {
+    benchmarkGroup: "facebook_video_actual_3s_long",
+    dataValid: true,
+    duration: 240,
+    threeSecondViewerRate: 35,
+    oneMinuteContinuationRate: 16,
+    averageWatchRatio: 3,
   },
 ];
 analytics.applyMarketGrades(longVideoMarketRows);
 assert.deepEqual(
   longVideoMarketRows.map((row) => row.qualityGrade),
-  ["A", "B", "C", "NA"],
-  "long Facebook videos must include actual 1-minute continuation in the overall grade",
+  ["A", "B", "C", "NA", "NA", "B"],
+  "long Facebook videos must include actual 1-minute continuation and length-adjusted Watch Depth in the overall grade",
 );
 
 const zeroClickImage = facebookImages.find((row) => row.dataValid && row.clickRate === 0);

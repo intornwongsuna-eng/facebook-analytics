@@ -162,13 +162,13 @@
               <div class="formula-box"><strong>สูตร:</strong> Reactions + Comments + Shares ÷ Reach × 100 · Click Rate แสดงเป็นข้อมูลประกอบ</div>
             </div>
             <div>
-              <h3>วิดีโอ: Actual Hook + 1min Continuation</h3>
+              <h3>วิดีโอ: Actual Hook + 1min + Watch Depth</h3>
               <div class="video-grade-framework">
                 <div class="signal-card">
                   <span class="signal-index">01</span>
                   <h4>Data Validity Gate</h4>
-                  <p>ตัดเกรด Actual Hook เมื่อ Reach ≥ 100 และคลิปยาวตั้งแต่ 60 วินาทีต้องมีค่า 1-minute จริง</p>
-                  <ul><li>ข้อมูล 1 นาทีไม่ครบ = N/A</li><li>คลิปสั้นกว่า 60 วินาทีใช้ Hook เท่านั้น</li><li>ไฟล์ไม่มีค่า 3 วินาทีจริงจึงค่อยใช้ Watch Ratio</li></ul>
+                  <p>ตัดเกรด Actual Hook เมื่อ Reach ≥ 100 และใช้ Watch Depth จากค่าเฉลี่ยเวลารับชมจริงแทนปลาย retention curve</p>
+                  <ul><li>Watch Depth = จำนวนวินาทีที่รับชมโดยเฉลี่ย ÷ ระยะเวลาคลิป</li><li>คลิปยาวตั้งแต่ 60 วินาทีต้องมีค่า 1-minute จริง</li><li>ไฟล์ไม่มีค่า 3 วินาทีจริงจึงค่อยใช้ Watch Ratio</li></ul>
                 </div>
                 <div class="signal-card">
                   <span class="signal-index">02</span>
@@ -176,8 +176,14 @@
                   <p>Unique 3-second viewers ÷ Reach ใช้วัดความสามารถในการหยุดคนดู</p>
                   <ul><li>A · ดี ≥ 30%</li><li>B · ผ่าน 20–29.9%</li><li>C · ควรปรับ &lt; 20%</li></ul>
                 </div>
+                <div class="signal-card">
+                  <span class="signal-index">03</span>
+                  <h4>Watch Depth</h4>
+                  <p>วัดความลึกของการรับชมจาก Avg Watch Seconds เทียบกับความยาวคลิป จึงเสถียรกว่าค่าอัตราดูจบจากปลายกราฟ</p>
+                  <ul><li>คลิปสั้น A ≥ 20% · B ≥ 10%</li><li>60–180s A ≥ 7% · B ≥ 5%</li><li>180s+ A ≥ 4% · B ≥ 2%</li></ul>
+                </div>
               </div>
-              <p class="methodology-footnote"><strong>เกรดรวมวิดีโอยาว:</strong> A ต้องมี Hook ≥ 30% และ 1min Continuation ≥ 15%; B ต้องมี Hook ≥ 20% และ 1min ≥ 8%; หากต่ำกว่าข้อใดข้อหนึ่งเป็น C โดย 1min Continuation = Unique 1-minute viewers ÷ Unique 3-second viewers</p>
+              <p class="methodology-footnote"><strong>เกรดรวมวิดีโอ:</strong> คลิปสั้นใช้ Hook + Watch Depth; คลิปยาวใช้ Hook + 1min Continuation + Watch Depth โดยเกรดรวมยึดค่าที่อ่อนที่สุดของสัญญาณทั้งหมด เพื่อกัน Hook ดีแต่คนอยู่ดูจริงไม่ลึกพอ</p>
               <p class="methodology-footnote"><strong>หมายเหตุประเทศไทย:</strong> ณ วันที่ 4 มิถุนายน 2026 ยังไม่มี public benchmark ที่ตรวจสอบได้สำหรับคลินิกเสริมความงามไทยโดยเฉพาะ จึงไม่กล่าวอ้างว่าเป็นค่าเฉลี่ยคลินิกไทย ค่าอ้างอิงตลาดไทยแบบกว้างจาก <a href="https://twfdigital.com/2024/08/facebook-ig-engagement-benchmark/" target="_blank" rel="noopener">TWF Digital</a> ใช้สูตรต่อ Followers ซึ่งต่างจาก export นี้และแสดงเป็นบริบทเท่านั้น ส่วนช่วง Hook/Hold อ้างอิง <a href="https://zeely.ai/blog/boost-meta-ads-hook-rate/" target="_blank" rel="noopener">Meta creative working range</a> และใช้ 1-minute เป็นเกณฑ์ continuation สำหรับคลิปยาว</p>
             </div>
           </div>

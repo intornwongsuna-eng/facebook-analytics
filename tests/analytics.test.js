@@ -86,38 +86,24 @@ assert.equal(replayExample.rawAverageWatchRatio, 200, "raw watch ratio should pr
 assert.equal(replayExample.averageWatchRatio, 100, "watch ratio used for grading must be capped at 100");
 assert.equal(replayExample.dataValid, true);
 
-const completionExample = analytics.evaluateFacebookVideo({
-  avgWatchSeconds: 8,
-  duration: 30,
-  views: 500,
-  reach: 400,
-  uniqueThreeSecondViewers: 120,
-  completionRate: 9,
-});
-assert.equal(completionExample.completionRate, 9, "video completion should be preserved as a grading metric");
-assert.equal(completionExample.hasCompletionMetric, true);
-
 const lowViewsExample = analytics.evaluateFacebookVideo({ avgWatchSeconds: 4.5, duration: 12, views: 80 });
 assert.equal(lowViewsExample.dataValid, false, "low-view videos should not be graded");
 
 const marketRows = [
   {
-    benchmarkGroup: "facebook_video_actual_3s_short",
+    benchmarkGroup: "facebook_video_actual_3s",
     dataValid: true,
     threeSecondViewerRate: 35,
-    completionRate: 12,
   },
   {
-    benchmarkGroup: "facebook_video_actual_3s_short",
+    benchmarkGroup: "facebook_video_actual_3s",
     dataValid: true,
     threeSecondViewerRate: 25,
-    completionRate: 6,
   },
   {
-    benchmarkGroup: "facebook_video_actual_3s_short",
+    benchmarkGroup: "facebook_video_actual_3s",
     dataValid: true,
     threeSecondViewerRate: 15,
-    completionRate: 3,
   },
 ];
 analytics.applyMarketGrades(marketRows);
@@ -125,51 +111,39 @@ assert.deepEqual(marketRows.map((row) => row.qualityGrade), ["A", "B", "C"]);
 
 const longVideoMarketRows = [
   {
-    benchmarkGroup: "facebook_video_actual_3s_long",
+    benchmarkGroup: "facebook_video_actual_3s",
     dataValid: true,
     duration: 90,
     threeSecondViewerRate: 35,
     oneMinuteContinuationRate: 16,
-    completionRate: 6,
   },
   {
-    benchmarkGroup: "facebook_video_actual_3s_long",
+    benchmarkGroup: "facebook_video_actual_3s",
     dataValid: true,
     duration: 90,
     threeSecondViewerRate: 35,
     oneMinuteContinuationRate: 9,
-    completionRate: 3,
   },
   {
-    benchmarkGroup: "facebook_video_actual_3s_long",
+    benchmarkGroup: "facebook_video_actual_3s",
     dataValid: true,
     duration: 90,
     threeSecondViewerRate: 35,
     oneMinuteContinuationRate: 5,
-    completionRate: 1,
   },
   {
-    benchmarkGroup: "facebook_video_actual_3s_long",
+    benchmarkGroup: "facebook_video_actual_3s",
     dataValid: true,
     duration: 90,
     threeSecondViewerRate: 35,
     oneMinuteContinuationRate: null,
-    completionRate: 6,
-  },
-  {
-    benchmarkGroup: "facebook_video_actual_3s_long",
-    dataValid: true,
-    duration: 90,
-    threeSecondViewerRate: 35,
-    oneMinuteContinuationRate: 16,
-    completionRate: null,
   },
 ];
 analytics.applyMarketGrades(longVideoMarketRows);
 assert.deepEqual(
   longVideoMarketRows.map((row) => row.qualityGrade),
-  ["A", "B", "C", "NA", "NA"],
-  "long Facebook videos must include actual 1-minute continuation and completion in the overall grade",
+  ["A", "B", "C", "NA"],
+  "long Facebook videos must include actual 1-minute continuation in the overall grade",
 );
 
 const zeroClickImage = facebookImages.find((row) => row.dataValid && row.clickRate === 0);

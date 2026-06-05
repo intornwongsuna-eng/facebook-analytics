@@ -87,27 +87,6 @@
       gradeB: 1.0,
       basis: "Global Healthcare benchmark 2025; applied to Engagement / Reach",
     },
-    facebook_video_actual_3s_short: {
-      metricField: "threeSecondViewerRate",
-      gradeA: 30,
-      gradeB: 20,
-      tertiaryMetricField: "completionRate",
-      tertiaryGradeA: 10,
-      tertiaryGradeB: 5,
-      basis: "Meta Hook working range plus end-of-curve completion standard; short videos must pass Hook and Completion",
-    },
-    facebook_video_actual_3s_long: {
-      metricField: "threeSecondViewerRate",
-      gradeA: 30,
-      gradeB: 20,
-      secondaryMetricField: "oneMinuteContinuationRate",
-      secondaryGradeA: 15,
-      secondaryGradeB: 8,
-      tertiaryMetricField: "completionRate",
-      tertiaryGradeA: 5,
-      tertiaryGradeB: 2,
-      basis: "Meta Hook working range plus 1-minute continuation and end-of-curve completion standard; long videos must pass all three stages",
-    },
     facebook_video_actual_3s: {
       metricField: "threeSecondViewerRate",
       gradeA: 30,
@@ -115,7 +94,7 @@
       secondaryMetricField: "oneMinuteContinuationRate",
       secondaryGradeA: 15,
       secondaryGradeB: 8,
-      basis: "Meta Hook working range plus 1-minute continuation standard; completion curve unavailable in this export",
+      basis: "Meta Hook working range plus 1-minute continuation standard; long videos must pass both stages",
     },
     facebook_video_watch_ratio: {
       metricField: "averageWatchRatio",
@@ -410,27 +389,6 @@
     return Number.isFinite(parsed) ? parsed : null;
   }
 
-  function normalizePercentValue(value) {
-    const parsed = parseOptionalNumber(value);
-    if (parsed === null) {
-      return null;
-    }
-    const percent = parsed > 0 && parsed <= 1 ? parsed * 100 : parsed;
-    return Math.min(Math.max(percent, 0), 100);
-  }
-
-  function getFacebookCompletionRate(record) {
-    const completionColumn = Object.keys(record).reduce((best, header) => {
-      const match = header.match(/^เปอร์เซ็นต์การรับชมทั้งหมดในช่วงเวลา\s+(\d+)$/);
-      if (!match) {
-        return best;
-      }
-      const interval = Number(match[1]);
-      return !best || interval > best.interval ? { header, interval } : best;
-    }, null);
-    return completionColumn ? normalizePercentValue(record[completionColumn.header]) : null;
-  }
-
   function parseYoutubeDate(value) {
     const text = String(value || "").trim();
     if (!text || text === "14") {
@@ -504,32 +462,23 @@
     rows.forEach((row) => {
       const benchmark = MARKET_BENCHMARKS[row.benchmarkGroup];
       const value = benchmark ? Number(row[benchmark.metricField]) : NaN;
+      const requiresOneMinute = row.benchmarkGroup === "facebook_video_actual_3s" && Number(row.duration) >= 60;
       const secondarySourceValue = benchmark?.secondaryMetricField
         ? row[benchmark.secondaryMetricField]
         : null;
       const secondaryValue = secondarySourceValue === null || secondarySourceValue === undefined
         ? NaN
         : Number(secondarySourceValue);
-      const tertiarySourceValue = benchmark?.tertiaryMetricField
-        ? row[benchmark.tertiaryMetricField]
-        : null;
-      const tertiaryValue = tertiarySourceValue === null || tertiarySourceValue === undefined
-        ? NaN
-        : Number(tertiarySourceValue);
-      const requiresOneMinute = (row.benchmarkGroup === "facebook_video_actual_3s_long"
-        || row.benchmarkGroup === "facebook_video_actual_3s") && Number(row.duration) >= 60;
       const requiresYoutubeShortStayed = row.benchmarkGroup === "youtube_short";
-      const requiresSecondary = Boolean(benchmark?.secondaryMetricField)
-        && (requiresOneMinute || requiresYoutubeShortStayed || Number.isFinite(secondaryValue));
-      const requiresTertiary = Boolean(benchmark?.tertiaryMetricField);
+      const requiresSecondary = requiresOneMinute
+        || requiresYoutubeShortStayed
+        || (benchmark?.secondaryMetricField && Number.isFinite(secondaryValue));
       if (!benchmark || !row.dataValid || !Number.isFinite(value)) {
         row.qualityGrade = "NA";
         row.benchmarkGradeA = benchmark?.gradeA ?? null;
         row.benchmarkGradeB = benchmark?.gradeB ?? null;
         row.benchmarkSecondaryGradeA = benchmark?.secondaryGradeA ?? null;
         row.benchmarkSecondaryGradeB = benchmark?.secondaryGradeB ?? null;
-        row.benchmarkTertiaryGradeA = benchmark?.tertiaryGradeA ?? null;
-        row.benchmarkTertiaryGradeB = benchmark?.tertiaryGradeB ?? null;
         row.benchmarkBasis = benchmark?.basis || "Insufficient source data";
         return;
       }
@@ -540,32 +489,11 @@
         row.qualityGrade = "NA";
         row.primaryGrade = gradeByThreshold(value, benchmark.gradeA, benchmark.gradeB);
         row.secondaryGrade = "NA";
-        row.tertiaryGrade = requiresTertiary
-          ? gradeByThreshold(tertiaryValue, benchmark.tertiaryGradeA, benchmark.tertiaryGradeB)
-          : null;
         row.benchmarkGradeA = benchmark.gradeA;
         row.benchmarkGradeB = benchmark.gradeB;
         row.benchmarkSecondaryGradeA = benchmark.secondaryGradeA;
         row.benchmarkSecondaryGradeB = benchmark.secondaryGradeB;
-        row.benchmarkTertiaryGradeA = benchmark.tertiaryGradeA ?? null;
-        row.benchmarkTertiaryGradeB = benchmark.tertiaryGradeB ?? null;
         row.benchmarkBasis = `${benchmark.basis}; missing ${missingSecondaryLabel}`;
-        return;
-      }
-      if (requiresTertiary && !Number.isFinite(tertiaryValue)) {
-        row.qualityGrade = "NA";
-        row.primaryGrade = gradeByThreshold(value, benchmark.gradeA, benchmark.gradeB);
-        row.secondaryGrade = requiresSecondary
-          ? gradeByThreshold(secondaryValue, benchmark.secondaryGradeA, benchmark.secondaryGradeB)
-          : null;
-        row.tertiaryGrade = "NA";
-        row.benchmarkGradeA = benchmark.gradeA;
-        row.benchmarkGradeB = benchmark.gradeB;
-        row.benchmarkSecondaryGradeA = benchmark.secondaryGradeA ?? null;
-        row.benchmarkSecondaryGradeB = benchmark.secondaryGradeB ?? null;
-        row.benchmarkTertiaryGradeA = benchmark.tertiaryGradeA;
-        row.benchmarkTertiaryGradeB = benchmark.tertiaryGradeB;
-        row.benchmarkBasis = `${benchmark.basis}; missing Completion Rate metric`;
         return;
       }
       row.qualityMetric = value;
@@ -573,16 +501,13 @@
       row.secondaryGrade = requiresSecondary
         ? gradeByThreshold(secondaryValue, benchmark.secondaryGradeA, benchmark.secondaryGradeB)
         : null;
-      row.tertiaryGrade = requiresTertiary
-        ? gradeByThreshold(tertiaryValue, benchmark.tertiaryGradeA, benchmark.tertiaryGradeB)
-        : null;
-      row.qualityGrade = worstGrade(row.primaryGrade, row.secondaryGrade || "A", row.tertiaryGrade || "A");
+      row.qualityGrade = requiresSecondary
+        ? worstGrade(row.primaryGrade, row.secondaryGrade)
+        : row.primaryGrade;
       row.benchmarkGradeA = benchmark.gradeA;
       row.benchmarkGradeB = benchmark.gradeB;
       row.benchmarkSecondaryGradeA = benchmark.secondaryGradeA ?? null;
       row.benchmarkSecondaryGradeB = benchmark.secondaryGradeB ?? null;
-      row.benchmarkTertiaryGradeA = benchmark.tertiaryGradeA ?? null;
-      row.benchmarkTertiaryGradeB = benchmark.tertiaryGradeB ?? null;
       row.benchmarkBasis = benchmark.basis;
     });
     return rows;
@@ -599,7 +524,6 @@
     const reach = Number(rowLike.reach) || 0;
     const uniqueThreeSecondViewers = parseOptionalNumber(rowLike.uniqueThreeSecondViewers);
     const uniqueOneMinuteViewers = parseOptionalNumber(rowLike.uniqueOneMinuteViewers);
-    const completionRate = parseOptionalNumber(rowLike.completionRate);
     const rawAverageWatchRatio = duration > 0 && avgWatchSeconds > 0
       ? (avgWatchSeconds / duration) * 100
       : null;
@@ -620,7 +544,6 @@
       ? null
       : Math.min(Math.max(rawOneMinuteContinuationRate, 0), 100);
     const hasActualThreeSecondMetric = threeSecondViewerRate !== null;
-    const hasCompletionMetric = completionRate !== null;
     const qualityMetric = hasActualThreeSecondMetric ? threeSecondViewerRate : averageWatchRatio;
 
     return {
@@ -630,9 +553,7 @@
       threeSecondViewerRate,
       rawOneMinuteContinuationRate,
       oneMinuteContinuationRate,
-      completionRate,
       hasActualThreeSecondMetric,
-      hasCompletionMetric,
       qualityMetric,
       dataValid: hasActualThreeSecondMetric
         ? reach >= 100
@@ -655,7 +576,6 @@
       const oneMinuteViews = parseOptionalNumber(record[FB_HEADERS.oneMinuteViews]);
       const uniqueThreeSecondViewers = parseOptionalNumber(record[FB_HEADERS.uniqueThreeSecondViewers]);
       const uniqueOneMinuteViewers = parseOptionalNumber(record[FB_HEADERS.uniqueOneMinuteViewers]);
-      const completionRate = getFacebookCompletionRate(record);
       const clicks = parseNumber(record[FB_HEADERS.clicks]);
       const engagement = parseNumber(record[FB_HEADERS.engagement]);
       const clickRate = reach ? (clicks / reach) * 100 : null;
@@ -669,17 +589,12 @@
               reach,
               uniqueThreeSecondViewers,
               uniqueOneMinuteViewers,
-              completionRate,
             })
           : null;
       const qualityMetric = contentType === "video" ? videoEvaluation.qualityMetric : clickRate;
       const dataValid = contentType === "video" ? videoEvaluation.dataValid : reach >= 100 && clickRate !== null;
       const benchmarkGroup = contentType === "video"
-        ? videoEvaluation.hasActualThreeSecondMetric
-          ? videoEvaluation.hasCompletionMetric
-            ? duration >= 60 ? "facebook_video_actual_3s_long" : "facebook_video_actual_3s_short"
-            : "facebook_video_actual_3s"
-          : "facebook_video_watch_ratio"
+        ? videoEvaluation.hasActualThreeSecondMetric ? "facebook_video_actual_3s" : "facebook_video_watch_ratio"
         : "facebook_image";
       const department = classifyDepartment(caption);
 
@@ -721,9 +636,7 @@
         rawThreeSecondViewerRate: videoEvaluation?.rawThreeSecondViewerRate ?? null,
         oneMinuteContinuationRate: videoEvaluation?.oneMinuteContinuationRate ?? null,
         rawOneMinuteContinuationRate: videoEvaluation?.rawOneMinuteContinuationRate ?? null,
-        completionRate: videoEvaluation?.completionRate ?? null,
         hasActualThreeSecondMetric: videoEvaluation?.hasActualThreeSecondMetric ?? false,
-        hasCompletionMetric: videoEvaluation?.hasCompletionMetric ?? false,
         benchmarkGroup,
         dataValid,
         qualityMetric,
@@ -1331,7 +1244,7 @@
       state.facebookType === "video"
         ? averageMetric(rows.map((row) => hasActualHook ? row.threeSecondViewerRate : row.averageWatchRatio).filter((value) => value !== null))
         : weightedPercent(rows, "engagement", "reach");
-    const cards = [
+    return [
       { label: "Posts", value: formatInteger(rows.length), meta: state.facebookType === "video" ? "วิดีโอ" : "ภาพนิ่ง", accent: "kpi-fb" },
       { label: "Reach", value: formatInteger(summary.reach), meta: "หลัง filter", accent: "kpi-blue" },
       { label: "Views", value: formatInteger(summary.views), meta: "ยอดดูรวม", accent: "kpi-teal" },
@@ -1339,15 +1252,6 @@
       { label: "Clicks", value: formatInteger(summary.clicks), meta: `${formatInteger(summary.linkClicks)} link clicks`, accent: "kpi-amber" },
       { label: metricName, value: metricValue === null ? "N/A" : `${metricValue.toFixed(1)}%`, meta: "benchmark metric", accent: "kpi-fb" },
     ];
-    if (state.facebookType === "video" && hasActualHook) {
-      const avgContinuation = averageMetric(rows.map((row) => row.oneMinuteContinuationRate).filter((value) => value !== null));
-      const avgCompletion = averageMetric(rows.map((row) => row.completionRate).filter((value) => value !== null));
-      cards.push(
-        { label: "Avg 1min Hold", value: avgContinuation === null ? "N/A" : `${avgContinuation.toFixed(1)}%`, meta: "unique 1min / unique 3s", accent: "kpi-blue" },
-        { label: "Avg Completion", value: avgCompletion === null ? "N/A" : `${avgCompletion.toFixed(1)}%`, meta: "end of retention curve", accent: "kpi-teal" },
-      );
-    }
-    return cards;
   }
 
   function instagramKpis(rows) {
@@ -1440,7 +1344,7 @@
         <th>Clicks</th>
         ${isVideo
           ? hasActualHook
-            ? "<th>3s Hook Rate</th><th>1min Continuation</th><th>Completion</th>"
+            ? "<th>3s Hook Rate</th><th>1min Continuation</th>"
             : "<th>Avg Watch</th><th>Watch Ratio</th>"
           : "<th>Engagement Rate</th>"}
         <th>Grade</th>
@@ -1465,7 +1369,7 @@
               <td>${formatInteger(row.clicks)}</td>
               ${isVideo
                 ? hasActualHook
-                  ? `<td>${formatMetric(row.threeSecondViewerRate)}</td><td>${formatMetric(row.oneMinuteContinuationRate)}</td><td>${formatMetric(row.completionRate)}</td>`
+                  ? `<td>${formatMetric(row.threeSecondViewerRate)}</td><td>${formatMetric(row.oneMinuteContinuationRate)}</td>`
                   : `<td>${row.avgWatchSeconds ? `${row.avgWatchSeconds.toFixed(1)}s` : "N/A"}</td><td>${formatMetric(row.averageWatchRatio)}</td>`
                 : `<td>${formatMetric(row.engagementRate)}</td>`}
               <td>${renderGrade(row.qualityGrade)}</td>
@@ -1473,7 +1377,7 @@
             </tr>
           `,
         )
-        .join("") || emptyTableRow(isVideo && hasActualHook ? 12 : isVideo ? 11 : 10);
+        .join("") || emptyTableRow(isVideo ? 11 : 10);
 
     bindInteractiveRows();
   }
@@ -1624,8 +1528,6 @@
           { label: "1min continuation", value: formatMetric(row.oneMinuteContinuationRate), meta: "Unique 1-minute viewers / unique 3-second viewers" },
           { label: "1min grade", value: row.duration >= 60 ? gradeLabel(row.secondaryGrade) : "N/A", meta: row.duration >= 60 ? "ดี ≥ 15% · ผ่าน ≥ 8%" : "Video shorter than 60 seconds" },
           { label: "Unique 1min viewers", value: row.duration >= 60 ? formatInteger(row.uniqueOneMinuteViewers) : "N/A", meta: row.duration >= 60 ? "Actual Meta metric" : "Video shorter than 60 seconds" },
-          { label: "Completion rate", value: formatMetric(row.completionRate), meta: "End point of Meta retention curve" },
-          { label: "Completion grade", value: gradeLabel(row.tertiaryGrade), meta: row.duration >= 60 ? "ดี ≥ 5% · ผ่าน ≥ 2%" : "ดี ≥ 10% · ผ่าน ≥ 5%" },
           { label: "Market standard", value: benchmarkBand(row), meta: row.benchmarkBasis },
         ]
         : [
@@ -1695,23 +1597,17 @@
       if (!row.dataValid) {
         return "ข้อมูลยังไม่ผ่าน Data Validity Gate จึงแสดง N/A และไม่นำไปเทียบเกรด เพื่อหลีกเลี่ยงข้อสรุปจากฐานผู้ชมที่ไม่เพียงพอ";
       }
-      if (row.qualityGrade === "NA") {
-        return `ข้อมูลวิดีโอไม่ครบสำหรับสูตร 3 สัญญาณ (${row.benchmarkBasis}) ระบบจึงแสดง N/A แทนการสรุปเกินข้อมูลจริง`;
-      }
       const metricName = row.hasActualThreeSecondMetric ? "3s Hook Rate จริง" : "Watch Ratio";
       const continuationText = row.duration >= 60
         ? ` และ 1min Continuation ${formatMetric(row.oneMinuteContinuationRate)}`
         : "";
-      const completionText = row.hasActualThreeSecondMetric
-        ? ` และ Completion ${formatMetric(row.completionRate)}`
-        : "";
       if (row.qualityGrade === "A") {
-        return `${metricName} ผ่านระดับดี${continuationText}${completionText} โดยเกรดรวมผ่านทั้งช่วงเปิด การอยู่ต่อ และการดูจบ (${row.benchmarkBasis})`;
+        return `${metricName} ผ่านระดับดี${continuationText} โดยเกรดรวมผ่านทั้งช่วงเปิดและการรักษาคนดู (${row.benchmarkBasis})`;
       }
       if (row.qualityGrade === "B") {
-        return `${metricName} และความต่อเนื่องผ่านระดับใช้งาน${continuationText}${completionText} (${row.benchmarkBasis}) ควรทดลองปรับจังหวะเปิด เวลาที่เข้าสู่สาระสำคัญ และ payoff ปลายคลิป`;
+        return `${metricName} และความต่อเนื่องผ่านระดับใช้งาน${continuationText} (${row.benchmarkBasis}) ควรทดลองปรับจังหวะเปิดและเวลาที่เข้าสู่สาระสำคัญ`;
       }
-      return `${metricName}, 1min Continuation หรือ Completion ต่ำกว่ามาตรฐานตลาด${continuationText}${completionText} (${row.benchmarkBasis}) ควรตรวจ first frame โครงเรื่อง ช่วงเกริ่นนำ และเหตุผลให้ดูจนจบ`;
+      return `${metricName} หรือ 1min Continuation ต่ำกว่ามาตรฐานตลาด${continuationText} (${row.benchmarkBasis}) ควรตรวจ first frame โครงเรื่อง และช่วงเกริ่นนำ`;
     }
 
     if (row.qualityGrade === "A") {
@@ -2070,15 +1966,12 @@
     if (row.benchmarkGradeA === null || row.benchmarkGradeA === undefined || row.benchmarkGradeB === null || row.benchmarkGradeB === undefined) {
       return "N/A";
     }
-    const bands = [`ดี ≥ ${Number(row.benchmarkGradeA).toFixed(1)}% | ผ่าน ≥ ${Number(row.benchmarkGradeB).toFixed(1)}%`];
+    const primary = `ดี ≥ ${Number(row.benchmarkGradeA).toFixed(1)}% | ผ่าน ≥ ${Number(row.benchmarkGradeB).toFixed(1)}%`;
     if (row.benchmarkSecondaryGradeA !== null && row.benchmarkSecondaryGradeA !== undefined) {
       const secondaryLabel = row.benchmarkGroup === "youtube_short" ? "Stayed" : "1min";
-      bands.push(`${secondaryLabel} ดี ≥ ${Number(row.benchmarkSecondaryGradeA).toFixed(1)}% · ผ่าน ≥ ${Number(row.benchmarkSecondaryGradeB).toFixed(1)}%`);
+      return `${primary} | ${secondaryLabel} ดี ≥ ${Number(row.benchmarkSecondaryGradeA).toFixed(1)}% · ผ่าน ≥ ${Number(row.benchmarkSecondaryGradeB).toFixed(1)}%`;
     }
-    if (row.benchmarkTertiaryGradeA !== null && row.benchmarkTertiaryGradeA !== undefined) {
-      bands.push(`Completion ดี ≥ ${Number(row.benchmarkTertiaryGradeA).toFixed(1)}% · ผ่าน ≥ ${Number(row.benchmarkTertiaryGradeB).toFixed(1)}%`);
-    }
-    return bands.join(" | ");
+    return primary;
   }
 
   function formatDate(date) {

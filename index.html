@@ -3,315 +3,294 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>KVK Social Analytics Dashboard</title>
+    <title>KVK Clinic Content Team Social Intelligence</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <main class="app-shell">
-      <header class="page-header">
-        <div>
-          <p class="eyebrow">KVK A Content Team Analysis</p>
-          <h1>Social Media Enterprise Dashboard</h1>
-          <p class="subtitle">
-            วิเคราะห์ Facebook และ Instagram แยก platform พร้อม benchmark, grade และ filter ตามแผนก/คุณภาพ
-          </p>
+    <div class="premium-workspace">
+      <aside class="app-sidebar" aria-label="Workspace navigation">
+        <div class="sidebar-brand">
+          <span class="sidebar-logo">KVK</span>
+          <div>
+            <strong>KVK Clinic</strong>
+            <span>Content Team</span>
+          </div>
         </div>
-        <div class="platform-tabs" role="tablist" aria-label="Platform tabs">
-          <button id="tabFacebook" class="platform-tab active fb" type="button" data-platform="facebook">
-            Facebook <span id="facebookTabCount">0</span>
-          </button>
-          <button id="tabInstagram" class="platform-tab ig" type="button" data-platform="instagram">
-            Instagram <span id="instagramTabCount">0</span>
-          </button>
+        <nav class="sidebar-nav" aria-label="Dashboard sections">
+          <a class="sidebar-link active" href="#uploadTitle"><span>01</span>Workspace</a>
+          <a class="sidebar-link" href="#facebookView"><span>02</span>Analytics</a>
+          <a class="sidebar-link" href="#facebookTableBody"><span>03</span>Register</a>
+          <a class="sidebar-link" href="#detailModal"><span>04</span>Audit Trail</a>
+        </nav>
+        <div class="sidebar-status">
+          <span class="live-dot"></span>
+          <div>
+            <strong>Local Processing</strong>
+            <small>Private browser analysis</small>
+          </div>
+        </div>
+      </aside>
+
+      <main class="app-shell">
+        <div class="top-command-bar">
+          <div>
+            <p class="section-kicker">Premium analytics workspace</p>
+            <h2>KVK Clinic Content Team Social Intelligence</h2>
+          </div>
+          <div class="command-actions" aria-label="Workspace status">
+            <span>Private</span>
+            <span>Benchmark ready</span>
+          </div>
+        </div>
+      <header class="hero-header">
+        <div class="hero-orb hero-orb-one" aria-hidden="true"></div>
+        <div class="hero-orb hero-orb-two" aria-hidden="true"></div>
+        <div class="brand-lockup">
+          <span class="brand-mark">KVK</span>
+          <div>
+            <p class="eyebrow"><span class="live-dot"></span> Content Intelligence Center</p>
+            <h1>KVK Clinic<br /><span>Social Intelligence</span></h1>
+            <p class="subtitle">Workspace วิเคราะห์และกำกับคุณภาพคอนเทนต์สำหรับทีม KVK Clinic Content Team อ้างอิงข้อมูลจริงจาก Facebook, Instagram และ YouTube</p>
+          </div>
+        </div>
+        <div class="header-meta">
+          <span class="security-pill"><strong>LOCAL</strong> ประมวลผลภายใน Browser</span>
+          <span class="security-pill"><strong>PRIVATE</strong> ไม่ส่งข้อมูลออกนอกเครื่อง</span>
         </div>
       </header>
 
-      <section class="upload-panel" aria-label="Upload CSV files">
-        <div class="upload-item">
-          <input id="facebookInput" class="file-input" type="file" accept=".csv,text/csv" />
-          <label for="facebookInput" class="file-button fb">เลือก Facebook CSV</label>
+      <nav class="platform-tabs" role="tablist" aria-label="เลือกแพลตฟอร์ม">
+        <button id="tabFacebook" class="platform-tab active fb" type="button" data-platform="facebook">
+          Facebook <span id="facebookTabCount">0</span>
+        </button>
+        <button id="tabInstagram" class="platform-tab ig" type="button" data-platform="instagram">
+          Instagram <span id="instagramTabCount">0</span>
+        </button>
+        <button id="tabYoutube" class="platform-tab yt" type="button" data-platform="youtube">
+          YouTube <span id="youtubeTabCount">0</span>
+        </button>
+      </nav>
+
+      <section class="workspace-card upload-workspace" aria-labelledby="uploadTitle">
+        <div class="section-heading">
           <div>
-            <strong id="facebookFileName">ยังไม่ได้เลือกไฟล์ Facebook</strong>
-            <span>Page Insights export เช่น reach, clicks, video watch time</span>
+            <p class="section-kicker">01 / Data workspace</p>
+            <h2 id="uploadTitle">นำเข้าข้อมูลเพื่อประเมิน</h2>
+            <p>เลือกรายงาน export จากแต่ละแพลตฟอร์ม ระบบจะตรวจ schema และตัดเกรดตามหลักเกณฑ์ด้านล่าง</p>
+          </div>
+          <div class="upload-actions">
+            <button id="processButton" class="process-button" type="button">ประมวลผลไฟล์ที่เลือก</button>
+            <button id="loadSampleButton" class="secondary-button" type="button">โหลดข้อมูลตัวอย่างทั้งหมด</button>
           </div>
         </div>
 
-        <div class="upload-item">
-          <input id="instagramInput" class="file-input" type="file" accept=".csv,text/csv" />
-          <label for="instagramInput" class="file-button ig">เลือก Instagram CSV</label>
-          <div>
-            <strong id="instagramFileName">ยังไม่ได้เลือกไฟล์ Instagram</strong>
-            <span>Instagram content export เช่น reach, likes, saves, shares</span>
-          </div>
-        </div>
+        <div class="upload-grid">
+          <article class="upload-item fb-upload">
+            <div class="upload-platform">FB</div>
+            <div class="upload-copy">
+              <strong>Facebook Insights</strong>
+              <span id="facebookFileName">ยังไม่ได้เลือกไฟล์ Facebook</span>
+              <small>รองรับ CSV: reach, clicks, engagement, watch time</small>
+            </div>
+            <input id="facebookInput" class="file-input" type="file" accept=".csv,text/csv" />
+            <label for="facebookInput" class="file-button fb">เลือก CSV</label>
+          </article>
 
-        <button id="processButton" class="process-button" type="button">ประมวลผลข้อมูล</button>
+          <article class="upload-item ig-upload">
+            <div class="upload-platform">IG</div>
+            <div class="upload-copy">
+              <strong>Instagram Insights</strong>
+              <span id="instagramFileName">ยังไม่ได้เลือกไฟล์ Instagram</span>
+              <small>รองรับ CSV: reach, likes, saves, shares, follows</small>
+            </div>
+            <input id="instagramInput" class="file-input" type="file" accept=".csv,text/csv" />
+            <label for="instagramInput" class="file-button ig">เลือก CSV</label>
+          </article>
+
+          <article class="upload-item yt-upload">
+            <div class="upload-platform">YT</div>
+            <div class="upload-copy">
+              <strong>YouTube Analytics</strong>
+              <span id="youtubeFileName">ยังไม่ได้เลือกไฟล์ YouTube</span>
+              <small>รองรับ XLSX/XLS ตามรูปแบบไฟล์ Youtube data.xlsx</small>
+            </div>
+            <input id="youtubeInput" class="file-input" type="file" accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" />
+            <label for="youtubeInput" class="file-button yt">เลือก Excel</label>
+          </article>
+        </div>
       </section>
 
-      <section class="status-strip" aria-label="Data status">
-        <div>
-          <span>Facebook</span>
-          <strong id="facebookStatus">ยังไม่มีข้อมูล</strong>
-        </div>
-        <div>
-          <span>Instagram</span>
-          <strong id="instagramStatus">ยังไม่มีข้อมูล</strong>
-        </div>
-        <div>
-          <span>Active View</span>
-          <strong id="activeStatus">-</strong>
-        </div>
+      <section class="status-strip" aria-label="สถานะข้อมูล">
+        <div><span>Facebook</span><strong id="facebookStatus">ยังไม่มีข้อมูล</strong></div>
+        <div><span>Instagram</span><strong id="instagramStatus">ยังไม่มีข้อมูล</strong></div>
+        <div><span>YouTube</span><strong id="youtubeStatus">ยังไม่มีข้อมูล</strong></div>
+        <div><span>มุมมองปัจจุบัน</span><strong id="activeStatus">-</strong></div>
       </section>
 
       <section id="noticeBox" class="notice" hidden></section>
 
-      <section id="emptyState" class="empty-state">
-        <h2>เลือกไฟล์ Facebook และ/หรือ Instagram แล้วกดประมวลผล</h2>
-        <p>
-          Dashboard นี้ทำงานใน browser ทั้งหมด ข้อมูลไม่ถูกส่งออกนอกเครื่อง และจะไม่ตัดโพสต์ศัลยกรรมทิ้ง แต่ให้เลือกดูผ่าน dropdown filter
-        </p>
+      <section id="emptyState" class="empty-state onboarding-state">
+        <p class="section-kicker">Ready when you are</p>
+        <h2>เริ่มต้นด้วยการอัปโหลดไฟล์ หรือโหลดข้อมูลตัวอย่าง</h2>
+        <p>ระบบจะจัดกลุ่มประเภทคอนเทนต์ คำนวณตัวชี้วัด ตัดเกรด และแนะนำสิ่งที่ควรดำเนินการต่อโดยอัตโนมัติ</p>
+        <div class="onboarding-steps">
+          <span>1. นำเข้าข้อมูล</span>
+          <span>2. ตรวจคุณภาพ</span>
+          <span>3. เปรียบเทียบเกรด</span>
+          <span>4. นำผลไปวางแผน</span>
+        </div>
       </section>
 
       <section id="facebookView" class="platform-view" hidden>
         <article class="methodology-card fb-border">
           <div class="methodology-title fb-soft">
-            <div class="methodology-heading">
-              <span class="methodology-icon fb-icon">!</span>
-              <div>
-                <h2>Facebook Benchmarks & Methodology</h2>
-                <p>อ้างอิงหลักเกณฑ์: Meta Business Insights 2024 & Clinic Performance Matrix</p>
-              </div>
+            <div>
+              <p class="section-kicker">Governance Standard v2.0 · Updated 4 June 2026</p>
+              <h2>ประเมิน Facebook ด้วยมาตรฐาน Healthcare และ Meta Creative ปัจจุบัน</h2>
+              <p>ใช้เกณฑ์เปอร์เซ็นต์ตรง ๆ จากมาตรฐานตลาด และไม่เปรียบเทียบกับผลงานภายในองค์กร</p>
             </div>
+            <a class="reference-chip" href="https://blog.hootsuite.com/healthcare-social-media-benchmarks/" target="_blank" rel="noopener">อ้างอิง: Healthcare Benchmark 2025</a>
           </div>
           <div class="methodology-grid">
             <div>
-              <h3>📸 สำหรับภาพนิ่ง (Image)</h3>
+              <h3>ภาพนิ่ง: Engagement Rate by Reach</h3>
               <div class="grade-rules">
-                <div class="grade-rule">
-                  <span class="grade-chip grade-a">Grade A: CTR >= 3.5%</span>
-                  <span class="grade-action">อัดงบสเกลต่อ (Winning)</span>
-                </div>
-                <div class="grade-rule">
-                  <span class="grade-chip grade-b">Grade B: CTR 1.5% - 3.49%</span>
-                  <span class="grade-action">มาตรฐาน (Standard)</span>
-                </div>
-                <div class="grade-rule">
-                  <span class="grade-chip grade-c">Grade C: CTR < 1.5%</span>
-                  <span class="grade-action">ปรับปก/หยุดแอด (Danger)</span>
-                </div>
+                <div class="grade-rule"><span class="grade-chip grade-a">A · ดี ≥ 1.9%</span><span class="grade-action">ผ่านค่าเฉลี่ย Healthcare 2025</span></div>
+                <div class="grade-rule"><span class="grade-chip grade-b">B · ผ่าน 1.0–1.89%</span><span class="grade-action">ใช้งานได้ · ควรทดสอบเพิ่ม</span></div>
+                <div class="grade-rule"><span class="grade-chip grade-c">C · ควรปรับ &lt; 1.0%</span><span class="grade-action">ทบทวนเนื้อหาและ CTA</span></div>
               </div>
-              <div class="methodology-note fb-note">
-                <strong>ทำไมต้องใช้เกณฑ์นี้?:</strong>
-                ค่าเฉลี่ย CTR ของเพจความงามบน Facebook ในไทยอยู่ที่ 0.8-1.2% การทำได้ทะลุ 3.5% คือคอนเทนต์ที่เอาชนะพฤติกรรม
-                "ไถฟีดผ่าน" ของคนไทยได้สำเร็จ (Top 5% ของอุตสาหกรรม)
-              </div>
+              <div class="formula-box"><strong>สูตร:</strong> Reactions + Comments + Shares ÷ Reach × 100 · Click Rate แสดงเป็นข้อมูลประกอบ</div>
             </div>
             <div>
-              <h3>🎬 สำหรับวิดีโอ (Video)</h3>
-              <div class="grade-rules">
-                <div class="grade-rule">
-                  <span class="grade-chip grade-a">Grade A: 1m Ret >= 10%</span>
-                  <span class="grade-action">สร้าง Trust สูง ปิดการขายได้</span>
+              <h3>วิดีโอ: Actual Hook + 1min Continuation</h3>
+              <div class="video-grade-framework">
+                <div class="signal-card">
+                  <span class="signal-index">01</span>
+                  <h4>Data Validity Gate</h4>
+                  <p>ตัดเกรด Actual Hook เมื่อ Reach ≥ 100 และคลิปยาวตั้งแต่ 60 วินาทีต้องมีค่า 1-minute จริง</p>
+                  <ul><li>ข้อมูล 1 นาทีไม่ครบ = N/A</li><li>คลิปสั้นกว่า 60 วินาทีใช้ Hook เท่านั้น</li><li>ไฟล์ไม่มีค่า 3 วินาทีจริงจึงค่อยใช้ Watch Ratio</li></ul>
                 </div>
-                <div class="grade-rule">
-                  <span class="grade-chip grade-b">Grade B: 1m Ret 5% - 9.9%</span>
-                  <span class="grade-action">สร้าง Awareness ระดับกลาง</span>
-                </div>
-                <div class="grade-rule">
-                  <span class="grade-chip grade-c">Grade C: 3s Hook < 15%</span>
-                  <span class="grade-action">อินโทรพัง คนปัดทิ้งด่วน</span>
+                <div class="signal-card">
+                  <span class="signal-index">02</span>
+                  <h4>Actual 3s Hook Rate</h4>
+                  <p>Unique 3-second viewers ÷ Reach ใช้วัดความสามารถในการหยุดคนดู</p>
+                  <ul><li>A · ดี ≥ 30%</li><li>B · ผ่าน 20–29.9%</li><li>C · ควรปรับ &lt; 20%</li></ul>
                 </div>
               </div>
-              <div class="methodology-note fb-note">
-                <strong>ทำไมต้องใช้เกณฑ์นี้?:</strong>
-                Facebook Algorithm จะลดการเข้าถึงคลิปที่คนดูไม่ผ่าน 3 วินาทีแรก หากวิดีโอไหนสามารถรั้งคนดูได้เกิน 1 นาทีทะลุ 10%
-                ถือเป็น "เกณฑ์ทองคำ" สำหรับการทำ Retargeting แบบแม่นยำ
-              </div>
-              <p class="methodology-footnote">
-                หมายเหตุ: ไฟล์ export นี้ไม่มี 1-minute retention โดยตรง ระบบจึงใช้ Average Watch Time / Duration เป็น retention proxy สำหรับการจัดเกรดวิดีโอ
-              </p>
+              <p class="methodology-footnote"><strong>เกรดรวมวิดีโอยาว:</strong> A ต้องมี Hook ≥ 30% และ 1min Continuation ≥ 15%; B ต้องมี Hook ≥ 20% และ 1min ≥ 8%; หากต่ำกว่าข้อใดข้อหนึ่งเป็น C โดย 1min Continuation = Unique 1-minute viewers ÷ Unique 3-second viewers</p>
+              <p class="methodology-footnote"><strong>หมายเหตุประเทศไทย:</strong> ณ วันที่ 4 มิถุนายน 2026 ยังไม่มี public benchmark ที่ตรวจสอบได้สำหรับคลินิกเสริมความงามไทยโดยเฉพาะ จึงไม่กล่าวอ้างว่าเป็นค่าเฉลี่ยคลินิกไทย ค่าอ้างอิงตลาดไทยแบบกว้างจาก <a href="https://twfdigital.com/2024/08/facebook-ig-engagement-benchmark/" target="_blank" rel="noopener">TWF Digital</a> ใช้สูตรต่อ Followers ซึ่งต่างจาก export นี้และแสดงเป็นบริบทเท่านั้น ส่วนช่วง Hook/Hold อ้างอิง <a href="https://zeely.ai/blog/boost-meta-ads-hook-rate/" target="_blank" rel="noopener">Meta creative working range</a> และใช้ 1-minute เป็นเกณฑ์ continuation สำหรับคลิปยาว</p>
             </div>
           </div>
         </article>
 
-        <div class="sub-tabs" role="tablist" aria-label="Facebook content type">
-          <button id="facebookImageTab" class="sub-tab active fb" type="button" data-type="image">
-            ภาพนิ่ง <span id="facebookImageCount">0</span>
-          </button>
-          <button id="facebookVideoTab" class="sub-tab" type="button" data-type="video">
-            วิดีโอ <span id="facebookVideoCount">0</span>
-          </button>
+        <div class="sub-tabs" role="tablist" aria-label="ประเภท Facebook">
+          <button id="facebookImageTab" class="sub-tab active fb" type="button" data-type="image">ภาพนิ่ง <span id="facebookImageCount">0</span></button>
+          <button id="facebookVideoTab" class="sub-tab" type="button" data-type="video">วิดีโอ <span id="facebookVideoCount">0</span></button>
         </div>
 
-        <section class="filter-bar" aria-label="Facebook filters">
-          <select id="facebookDepartmentFilter">
-            <option value="all">ทุกแผนก</option>
-            <option value="surgery">ศัลยกรรม</option>
-            <option value="aesthetic">หัตถการ / เสริมความงาม</option>
-            <option value="brand">แบรนด์ / โปรโมชัน / ประกาศ</option>
-          </select>
-          <select id="facebookQualityFilter">
-            <option value="all">ทุกคุณภาพ</option>
-            <option value="A">Grade A</option>
-            <option value="B">Grade B</option>
-            <option value="C">Grade C</option>
-            <option value="NA">N/A</option>
-          </select>
-          <input id="facebookSearch" type="search" placeholder="ค้นหาโพสต์ Facebook..." />
+        <section class="filter-bar" aria-label="ตัวกรอง Facebook">
+          <select id="facebookDepartmentFilter"><option value="all">ทุกหมวดเนื้อหา</option><option value="surgery">ศัลยกรรม</option><option value="aesthetic">หัตถการ / ความงาม</option><option value="brand">แบรนด์ / โปรโมชั่น</option></select>
+          <select id="facebookQualityFilter"><option value="all">ทุกเกรด</option><option value="A">Grade A</option><option value="B">Grade B</option><option value="C">Grade C</option><option value="NA">N/A</option></select>
+          <input id="facebookSearch" type="search" placeholder="ค้นหาโพสต์ Facebook" />
         </section>
-
         <section id="facebookKpis" class="kpi-grid"></section>
         <section class="visual-grid">
-          <article class="panel panel-wide">
-            <div class="panel-heading">
-              <h2>Weekly Trend</h2>
-              <p>Reach, engagement และ clicks ตามสัปดาห์</p>
-            </div>
-            <div id="facebookTrendChart" class="chart-box"></div>
-          </article>
-          <article class="panel">
-            <div class="panel-heading">
-              <h2>แผนก</h2>
-              <p>Performance ตาม department filter</p>
-            </div>
-            <div id="facebookDepartmentChart" class="chart-box compact"></div>
-          </article>
-          <article class="panel">
-            <div class="panel-heading">
-              <h2>Top Posts</h2>
-              <p>โพสต์ที่ reach สูงสุดใน view นี้</p>
-            </div>
-            <div id="facebookTopChart" class="chart-box compact"></div>
-          </article>
+          <article class="panel panel-wide"><div class="panel-heading"><h2>Weekly Performance</h2><p>แนวโน้ม Reach, Engagement และ Clicks</p></div><div id="facebookTrendChart" class="chart-box"></div></article>
+          <article class="panel"><div class="panel-heading"><h2>Content Category</h2><p>Reach ตามหมวดเนื้อหา</p></div><div id="facebookDepartmentChart" class="chart-box compact"></div></article>
+          <article class="panel"><div class="panel-heading"><h2>Top Content</h2><p>รายการที่สร้าง Reach สูงสุด</p></div><div id="facebookTopChart" class="chart-box compact"></div></article>
         </section>
-        <section class="panel panel-wide">
-          <div class="panel-heading">
-            <h2>Facebook Content Table</h2>
-            <p>เรียงตาม Reach พร้อม grade และ benchmark metric</p>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead id="facebookTableHead"></thead>
-              <tbody id="facebookTableBody"></tbody>
-            </table>
-          </div>
-        </section>
+        <section class="panel panel-wide"><div class="panel-heading"><h2>Facebook Content Register</h2><p>คลิกแต่ละรายการเพื่อดูเหตุผลการตัดเกรดและคำแนะนำ</p></div><div class="table-wrap"><table><thead id="facebookTableHead"></thead><tbody id="facebookTableBody"></tbody></table></div></section>
       </section>
 
       <section id="instagramView" class="platform-view" hidden>
         <article class="methodology-card ig-border">
           <div class="methodology-title ig-soft">
-            <div class="methodology-heading">
-              <span class="methodology-icon ig-icon">!</span>
-              <div>
-                <h2>Instagram Benchmarks & Methodology</h2>
-                <p>อ้างอิงหลักเกณฑ์: RivalIQ 2024 Social Media Industry Benchmark Report (Health & Beauty)</p>
-              </div>
-            </div>
+            <div><p class="section-kicker">Instagram grading framework</p><h2>วัดความสามารถในการสร้างปฏิสัมพันธ์ด้วย Engagement Rate</h2><p>รวม interaction ที่มีนัยต่อธุรกิจ ได้แก่ likes, comments, shares, saves และ follows</p></div>
+            <a class="reference-chip" href="https://www.dashsocial.com/social-media-benchmarks/beauty-industry" target="_blank" rel="noopener">อ้างอิง: Beauty Benchmark 2026</a>
           </div>
           <div class="methodology-grid">
             <div>
-              <h3>การวัดผล Engagement Rate (ER)</h3>
+              <h3>เกณฑ์ตัดเกรด</h3>
               <div class="grade-rules">
-                <div class="grade-rule">
-                  <span class="grade-chip grade-a">Grade A: ER >= 2.5%</span>
-                  <span class="grade-action">ไวรัล ดึงดูดสูงมาก</span>
-                </div>
-                <div class="grade-rule">
-                  <span class="grade-chip grade-b">Grade B: ER 1.0% - 2.49%</span>
-                  <span class="grade-action">มาตรฐานคลินิกชั้นนำ</span>
-                </div>
-                <div class="grade-rule">
-                  <span class="grade-chip grade-c">Grade C: ER < 1.0%</span>
-                  <span class="grade-action">คอนเทนต์ไม่ตรงจริตฟอลโลเวอร์</span>
-                </div>
-              </div>
-              <p>ER = (likes + comments + shares + saves + follows) / Reach</p>
-            </div>
-            <div>
-              <h3>Instagram Context</h3>
-              <div class="methodology-note ig-note">
-                <strong>ทำไมต้องใช้เกณฑ์นี้?:</strong>
-                รายงานปี 2024 ระบุว่ากลุ่ม Health & Beauty มีค่าเฉลี่ย ER เพียง 0.34% การตั้งเกณฑ์ Grade A ไว้ที่ 2.5% คือการเซ็ตมาตรฐานแบรนด์ระดับไฮเอนด์
-                (Top Tier) เพราะพฤติกรรมผู้ใช้ IG เน้นความสวยงามทาง Visual (Aesthetic) ภาพที่มียอดสูงมักเป็น Lifestyle หรือความรู้แบบพรีเมียม มากกว่าโฆษณาขายตรง
+                <div class="grade-rule"><span class="grade-chip grade-a">A · ดี ≥ 3.7%</span><span class="grade-action">Healthcare average 2025</span></div>
+                <div class="grade-rule"><span class="grade-chip grade-b">B · ผ่าน 2.0–3.69%</span><span class="grade-action">Beauty working range 2026</span></div>
+                <div class="grade-rule"><span class="grade-chip grade-c">C · ควรปรับ &lt; 2.0%</span><span class="grade-action">ทบทวน audience fit และ CTA</span></div>
               </div>
             </div>
+            <div><h3>วิธีคำนวณ</h3><div class="formula-box"><strong>ER =</strong> (Likes + Comments + Shares + Saves + Follows) ÷ Reach × 100</div><p class="methodology-footnote">ER ใช้เปรียบเทียบประสิทธิภาพต่อ Reach และไม่ควรใช้แทนยอดขายหรือผลลัพธ์ด้าน conversion โดยตรง</p></div>
           </div>
         </article>
-
-        <section class="filter-bar" aria-label="Instagram filters">
-          <select id="instagramDepartmentFilter">
-            <option value="all">ทุกแผนก</option>
-            <option value="surgery">ศัลยกรรม</option>
-            <option value="aesthetic">หัตถการ / เสริมความงาม</option>
-            <option value="brand">แบรนด์ / โปรโมชัน / ประกาศ</option>
-          </select>
-          <select id="instagramQualityFilter">
-            <option value="all">ทุกคุณภาพ (ER)</option>
-            <option value="A">Grade A</option>
-            <option value="B">Grade B</option>
-            <option value="C">Grade C</option>
-          </select>
-          <select id="instagramTypeFilter">
-            <option value="all">ทุกประเภทโพสต์</option>
-            <option value="video">Reels / วิดีโอ</option>
-            <option value="image">ภาพนิ่ง / สไลด์</option>
-          </select>
-          <input id="instagramSearch" type="search" placeholder="ค้นหาโพสต์ Instagram..." />
+        <section class="filter-bar" aria-label="ตัวกรอง Instagram">
+          <select id="instagramDepartmentFilter"><option value="all">ทุกหมวดเนื้อหา</option><option value="surgery">ศัลยกรรม</option><option value="aesthetic">หัตถการ / ความงาม</option><option value="brand">แบรนด์ / โปรโมชั่น</option></select>
+          <select id="instagramQualityFilter"><option value="all">ทุกเกรด</option><option value="A">Grade A</option><option value="B">Grade B</option><option value="C">Grade C</option><option value="NA">N/A</option></select>
+          <select id="instagramTypeFilter"><option value="all">ทุกประเภท</option><option value="video">Reels / วิดีโอ</option><option value="image">ภาพนิ่ง / สไลด์</option></select>
+          <input id="instagramSearch" type="search" placeholder="ค้นหาโพสต์ Instagram" />
         </section>
-
         <section id="instagramKpis" class="kpi-grid"></section>
         <section class="visual-grid">
-          <article class="panel panel-wide">
-            <div class="panel-heading">
-              <h2>Weekly Trend</h2>
-              <p>Reach และ engagement ตามสัปดาห์</p>
-            </div>
-            <div id="instagramTrendChart" class="chart-box"></div>
-          </article>
-          <article class="panel">
-            <div class="panel-heading">
-              <h2>Grade Mix</h2>
-              <p>สัดส่วนคุณภาพตาม ER</p>
-            </div>
-            <div id="instagramGradeChart" class="chart-box compact"></div>
-          </article>
-          <article class="panel">
-            <div class="panel-heading">
-              <h2>Top Posts</h2>
-              <p>โพสต์ที่ ER สูงสุดใน view นี้</p>
-            </div>
-            <div id="instagramTopChart" class="chart-box compact"></div>
-          </article>
+          <article class="panel panel-wide"><div class="panel-heading"><h2>Weekly Performance</h2><p>แนวโน้ม Reach, Engagement และ Views</p></div><div id="instagramTrendChart" class="chart-box"></div></article>
+          <article class="panel"><div class="panel-heading"><h2>Grade Distribution</h2><p>Reach แยกตามเกรด</p></div><div id="instagramGradeChart" class="chart-box compact"></div></article>
+          <article class="panel"><div class="panel-heading"><h2>Top Content</h2><p>รายการที่มี ER สูงสุด</p></div><div id="instagramTopChart" class="chart-box compact"></div></article>
         </section>
-        <section class="panel panel-wide">
-          <div class="panel-heading">
-            <h2>Instagram Content Table</h2>
-            <p>เรียงตาม ER พร้อม action metrics</p>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>เนื้อหา</th>
-                  <th>แผนก</th>
-                  <th>ประเภท</th>
-                  <th>Reach</th>
-                  <th>Views</th>
-                  <th>Engagement</th>
-                  <th>ER</th>
-                  <th>Grade</th>
-                  <th>ลิงก์</th>
-                </tr>
-              </thead>
-              <tbody id="instagramTableBody"></tbody>
-            </table>
-          </div>
-        </section>
+        <section class="panel panel-wide"><div class="panel-heading"><h2>Instagram Content Register</h2><p>คลิกแต่ละรายการเพื่อดูเหตุผลการตัดเกรดและคำแนะนำ</p></div><div class="table-wrap"><table><thead><tr><th>#</th><th>เนื้อหา</th><th>หมวด</th><th>ประเภท</th><th>Reach</th><th>Views</th><th>Engagement</th><th>ER</th><th>Grade</th><th>ลิงก์</th></tr></thead><tbody id="instagramTableBody"></tbody></table></div></section>
       </section>
-    </main>
 
+      <section id="youtubeView" class="platform-view" hidden>
+        <article class="methodology-card yt-border">
+          <div class="methodology-title yt-soft">
+            <div><p class="section-kicker">Governance Standard v2.0 · Updated 4 June 2026</p><h2>ประเมิน YouTube ด้วยเกณฑ์ Retention ที่อ่านง่าย</h2><p>ใช้ metric จริงจากชีต “ข้อมูลตาราง” แยก Long-form และ Shorts พร้อม Data Validity Gate</p></div>
+            <a class="reference-chip" href="https://pages.dashsocial.com/hubfs/social-media-benchmark/2025/H2/youtube.pdf" target="_blank" rel="noopener">อ้างอิง: YouTube Benchmark H2 2025</a>
+          </div>
+          <div class="methodology-grid">
+            <div>
+              <h3>Long-form · วิดีโอเกิน 60 วินาที</h3>
+              <div class="grade-rules">
+                <div class="grade-rule"><span class="grade-chip grade-a">A · ดี ≥ 50%</span><span class="grade-action">Retention แข็งแรง</span></div>
+                <div class="grade-rule"><span class="grade-chip grade-b">B · ผ่าน 35–49.9%</span><span class="grade-action">ใช้งานได้ · ปรับจังหวะ</span></div>
+                <div class="grade-rule"><span class="grade-chip grade-c">C · ควรปรับ &lt; 35%</span><span class="grade-action">ทบทวนโครงเรื่อง</span></div>
+              </div>
+            </div>
+            <div>
+              <h3>Shorts · วิดีโอไม่เกิน 60 วินาที</h3>
+              <div class="grade-rules">
+                <div class="grade-rule"><span class="grade-chip grade-a">A · ดี ≥ 100%</span><span class="grade-action">มี replay/loop แข็งแรง</span></div>
+                <div class="grade-rule"><span class="grade-chip grade-b">B · ผ่าน 70–99.9%</span><span class="grade-action">Retention ใช้งานได้</span></div>
+                <div class="grade-rule"><span class="grade-chip grade-c">C · ควรปรับ &lt; 70%</span><span class="grade-action">แก้ first frame และจังหวะ</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="scorecard-note"><strong>หลักการอ่านผล:</strong> เกณฑ์ YouTube เป็น working standard สำหรับทีมการตลาด ไม่ใช่เกณฑ์ทางการของ YouTube; รายงาน Dash Social H2 2025 ระบุ Beauty Average Percentage Viewed ที่ 104% แต่ไม่ได้แยกคลินิกไทยหรือแยก Long-form/Shorts จึงใช้เป็นทิศทางประกอบเท่านั้น</div>
+        </article>
+        <section class="filter-bar" aria-label="ตัวกรอง YouTube">
+          <select id="youtubeTypeFilter"><option value="all">ทุกประเภท</option><option value="long">Long-form</option><option value="short">Shorts</option></select>
+          <select id="youtubeQualityFilter"><option value="all">ทุกเกรด</option><option value="A">Grade A</option><option value="B">Grade B</option><option value="C">Grade C</option><option value="NA">N/A</option></select>
+          <input id="youtubeSearch" type="search" placeholder="ค้นหาชื่อวิดีโอ YouTube" />
+        </section>
+        <section id="youtubeKpis" class="kpi-grid"></section>
+        <section class="visual-grid">
+          <article class="panel panel-wide"><div class="panel-heading"><h2>Grade Distribution</h2><p>จำนวน Views แยกตามเกรด</p></div><div id="youtubeGradeChart" class="chart-box"></div></article>
+          <article class="panel"><div class="panel-heading"><h2>Top Retention</h2><p>วิดีโอที่รักษาคนดูได้ดีที่สุด</p></div><div id="youtubeRetentionChart" class="chart-box compact"></div></article>
+          <article class="panel"><div class="panel-heading"><h2>Top Views</h2><p>วิดีโอที่สร้างจำนวนการดูสูงสุด</p></div><div id="youtubeTopChart" class="chart-box compact"></div></article>
+        </section>
+        <section class="panel panel-wide"><div class="panel-heading"><h2>YouTube Video Register</h2><p>ตารางตัดเกรดละเอียดจากข้อมูลใน workbook</p></div><div class="table-wrap"><table><thead><tr><th>#</th><th>ชื่อวิดีโอ</th><th>ประเภท</th><th>Views</th><th>Retention</th><th>Stayed to Watch</th><th>Impression CTR</th><th>Subscribers</th><th>Grade Metric</th><th>Grade</th><th>ลิงก์</th></tr></thead><tbody id="youtubeTableBody"></tbody></table></div></section>
+      </section>
+      </main>
+    </div>
+
+    <section id="detailModal" class="detail-modal" hidden aria-hidden="true">
+      <div class="detail-backdrop" data-close-modal="true"></div>
+      <div class="detail-dialog" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+        <button id="detailCloseButton" class="detail-close" type="button" aria-label="ปิดรายละเอียด">×</button>
+        <div class="detail-header"><span id="detailBadge" class="detail-badge"></span><h2 id="detailTitle">รายละเอียดคอนเทนต์</h2><p id="detailSubtitle" class="detail-subtitle"></p></div>
+        <div id="detailMetricGrid" class="detail-metric-grid"></div>
+        <article id="detailEvaluation" class="detail-evaluation"><p id="detailGradeLabel" class="detail-grade-label"></p><p id="detailEvaluationText" class="detail-evaluation-text"></p></article>
+        <div class="detail-section"><h3>แนวทางดำเนินการ</h3><div id="detailActionList" class="detail-action-list"></div></div>
+        <div class="detail-section"><h3>เนื้อหา / ชื่อวิดีโอ</h3><p id="detailCaption" class="detail-caption"></p></div>
+        <div class="detail-footer"><a id="detailPermalink" href="#" target="_blank" rel="noopener">เปิดต้นฉบับ</a></div>
+      </div>
+    </section>
+
+    <script src="vendor/xlsx.full.min.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

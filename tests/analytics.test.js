@@ -7,7 +7,7 @@ const facebookPath = path.join(
   __dirname,
   "..",
   "sources",
-  "facebook-Feb-26-2026_May-26-2026_817678151175572.csv",
+  "Apr-28-2026_May-25-2026_2176080329882985.csv",
 );
 const instagramPath = path.join(
   __dirname,
@@ -24,9 +24,9 @@ const instagramMatrix = analytics.parseCsv(instagramText);
 const facebook = analytics.processFacebookCsv(facebookText);
 const instagram = analytics.processInstagramCsv(instagramText);
 
-assert.equal(facebookMatrix.length, 261, "Facebook CSV should include one header row plus 260 data rows");
-assert.equal(facebook.headers.length, 33, "Facebook CSV should parse 33 headers");
-assert.equal(facebook.rows.length, 260, "Facebook CSV should parse 260 posts");
+assert.equal(facebookMatrix.length, 102, "Facebook CSV should include one header row plus 101 data rows");
+assert.equal(facebook.headers.length, 196, "Facebook CSV should parse the expanded Meta export schema");
+assert.equal(facebook.rows.length, 101, "Facebook CSV should parse 101 posts");
 
 assert.equal(instagramMatrix.length, 178, "Instagram CSV should include one header row plus 177 data rows");
 assert.equal(instagram.headers.length, 18, "Instagram CSV should parse 18 headers");
@@ -34,8 +34,8 @@ assert.equal(instagram.rows.length, 177, "Instagram CSV should parse 177 posts")
 
 const facebookImages = facebook.rows.filter((row) => row.contentType === "image");
 const facebookVideos = facebook.rows.filter((row) => row.contentType === "video");
-assert.equal(facebookImages.length, 164, "Facebook should split 164 image posts");
-assert.equal(facebookVideos.length, 96, "Facebook should split 96 video posts");
+assert.equal(facebookImages.length, 73, "Facebook should split 73 image posts");
+assert.equal(facebookVideos.length, 28, "Facebook should split 28 video posts");
 
 const instagramImages = instagram.rows.filter((row) => row.contentType === "image");
 const instagramVideos = instagram.rows.filter((row) => row.contentType === "video");
@@ -43,8 +43,8 @@ assert.equal(instagramImages.length, 91, "Instagram should split image/slide pos
 assert.equal(instagramVideos.length, 86, "Instagram should split Reels posts");
 
 const fbDates = facebook.rows.map((row) => row.publishedAt).filter(Boolean);
-assert.equal(analytics.formatDate(new Date(Math.min(...fbDates))), "2026-02-26");
-assert.equal(analytics.formatDate(new Date(Math.max(...fbDates))), "2026-05-26");
+assert.equal(analytics.formatDate(new Date(Math.min(...fbDates))), "2026-04-28");
+assert.equal(analytics.formatDate(new Date(Math.max(...fbDates))), "2026-05-25");
 
 const igDates = instagram.rows.map((row) => row.publishedAt).filter(Boolean);
 assert.equal(analytics.formatDate(new Date(Math.min(...igDates))), "2026-02-26");
@@ -54,33 +54,119 @@ const surgeryFb = facebook.rows.find((row) => row.caption.includes("ผ่าต
 assert.ok(surgeryFb, "expected to find Facebook surgery content");
 assert.equal(surgeryFb.departmentId, "surgery", "surgery content should remain in data and be filterable");
 
-const kvkSurgeryVideoExamples = [
-  "ถุงใต้ตาเป็นก้อน",
-  "เหนียงใหญ่คางสองชั้น",
-  "ปักตระกร้าแล้ว",
-  "ลดน้ำหนักแต่เหนียงยังอยู่",
-];
-for (const text of kvkSurgeryVideoExamples) {
-  const match = facebook.rows.find((row) => row.contentType === "video" && row.caption.includes(text));
-  assert.ok(match, `expected to find Facebook video containing ${text}`);
-  assert.equal(match.departmentId, "surgery", `${text} should be classified as surgery`);
-}
-
 const aestheticFb = facebook.rows.find((row) => row.caption.toLowerCase().includes("ultherapy"));
 assert.ok(aestheticFb, "expected to find Facebook aesthetic content");
 assert.equal(aestheticFb.departmentId, "aesthetic");
 
 const facebookImageGrades = new Set(facebookImages.map((row) => row.qualityGrade));
-assert.ok(facebookImageGrades.has("A"), "Facebook image CTR grading should create Grade A rows");
-assert.ok(facebookImageGrades.has("C"), "Facebook image CTR grading should create Grade C rows");
+assert.ok(facebookImageGrades.has("A"), "Facebook image market grading should create Grade A rows");
+assert.ok(facebookImageGrades.has("C"), "Facebook image market grading should create Grade C rows");
+assert.ok(facebookImageGrades.has("NA"), "Facebook rows below the validity gate should be N/A");
 
-const gradedVideo = facebookVideos.find((row) => row.retentionProxy !== null);
-assert.ok(gradedVideo, "Facebook video rows with duration/watch data should get retention proxy");
+const gradedVideo = facebookVideos.find((row) => row.qualityGrade !== "NA");
+assert.ok(gradedVideo, "Facebook video rows with actual 3-second viewer data should be graded");
 assert.equal(["A", "B", "C"].includes(gradedVideo.qualityGrade), true);
+assert.equal("hookProxy" in gradedVideo, false, "Facebook must not infer a 3-second Hook from average watch");
+assert.equal(gradedVideo.hasActualThreeSecondMetric, true);
+assert.equal(
+  gradedVideo.threeSecondViewerRate,
+  (gradedVideo.uniqueThreeSecondViewers / gradedVideo.reach) * 100,
+  "3s Hook Rate must use actual unique 3-second viewers divided by reach",
+);
+if (gradedVideo.duration >= 60 && gradedVideo.uniqueOneMinuteViewers !== null) {
+  assert.equal(
+    gradedVideo.oneMinuteContinuationRate,
+    (gradedVideo.uniqueOneMinuteViewers / gradedVideo.uniqueThreeSecondViewers) * 100,
+    "1min continuation must use actual unique viewer counts",
+  );
+}
+
+const replayExample = analytics.evaluateFacebookVideo({ avgWatchSeconds: 12, duration: 6, views: 500 });
+assert.equal(replayExample.rawAverageWatchRatio, 200, "raw watch ratio should preserve replay/loop evidence");
+assert.equal(replayExample.averageWatchRatio, 100, "watch ratio used for grading must be capped at 100");
+assert.equal(replayExample.dataValid, true);
+
+const lowViewsExample = analytics.evaluateFacebookVideo({ avgWatchSeconds: 4.5, duration: 12, views: 80 });
+assert.equal(lowViewsExample.dataValid, false, "low-view videos should not be graded");
+
+const marketRows = [
+  {
+    benchmarkGroup: "facebook_video_actual_3s",
+    dataValid: true,
+    threeSecondViewerRate: 35,
+  },
+  {
+    benchmarkGroup: "facebook_video_actual_3s",
+    dataValid: true,
+    threeSecondViewerRate: 25,
+  },
+  {
+    benchmarkGroup: "facebook_video_actual_3s",
+    dataValid: true,
+    threeSecondViewerRate: 15,
+  },
+];
+analytics.applyMarketGrades(marketRows);
+assert.deepEqual(marketRows.map((row) => row.qualityGrade), ["A", "B", "C"]);
+
+const longVideoMarketRows = [
+  {
+    benchmarkGroup: "facebook_video_actual_3s",
+    dataValid: true,
+    duration: 90,
+    threeSecondViewerRate: 35,
+    oneMinuteContinuationRate: 16,
+  },
+  {
+    benchmarkGroup: "facebook_video_actual_3s",
+    dataValid: true,
+    duration: 90,
+    threeSecondViewerRate: 35,
+    oneMinuteContinuationRate: 9,
+  },
+  {
+    benchmarkGroup: "facebook_video_actual_3s",
+    dataValid: true,
+    duration: 90,
+    threeSecondViewerRate: 35,
+    oneMinuteContinuationRate: 5,
+  },
+  {
+    benchmarkGroup: "facebook_video_actual_3s",
+    dataValid: true,
+    duration: 90,
+    threeSecondViewerRate: 35,
+    oneMinuteContinuationRate: null,
+  },
+];
+analytics.applyMarketGrades(longVideoMarketRows);
+assert.deepEqual(
+  longVideoMarketRows.map((row) => row.qualityGrade),
+  ["A", "B", "C", "NA"],
+  "long Facebook videos must include actual 1-minute continuation in the overall grade",
+);
+
+const zeroClickImage = facebookImages.find((row) => row.dataValid && row.clickRate === 0);
+assert.ok(zeroClickImage, "new Facebook database should include a valid zero-click image");
+assert.equal(zeroClickImage.qualityGrade, "C", "zero-click images with weak engagement should remain Grade C");
+
+const youtubeMatrix = [
+  Object.values(analytics.YT_HEADERS),
+  ["long-a", "Long-form winner", "Jan 5, 2026", 300, 1000, 45, 70, 1200, 50, 12, "0:02:15", 10000, 5.2],
+  ["short-c", "Short with weak hook", "Jan 6, 2026", 45, 800, 80, 42, 900, 8, 3, "0:00:36", 2000, 3],
+  ["missing", "Missing metrics", "14", 90, 0, "14", "14", 0, 0, 0, "14", 0, "14"],
+];
+const youtube = analytics.processYoutubeMatrix(youtubeMatrix);
+assert.equal(youtube.rows.length, 3);
+assert.equal(youtube.rows[0].contentType, "long");
+assert.equal(youtube.rows[0].qualityGrade, "B", "long-form retention should use fixed market thresholds");
+assert.equal(youtube.rows[1].contentType, "short");
+assert.equal(youtube.rows[1].qualityGrade, "B", "Shorts retention should use fixed market thresholds");
+assert.equal(youtube.rows[2].qualityGrade, "NA", "placeholder values should not be graded");
 
 const instagramGradeA = instagram.rows.find((row) => row.qualityGrade === "A");
-assert.ok(instagramGradeA, "Instagram ER grading should create Grade A rows");
-assert.equal(instagramGradeA.engagementRate >= 2.5, true);
+assert.ok(instagramGradeA, "Instagram market grading should create Grade A rows");
+assert.equal(instagramGradeA.engagementRate >= 3.7, true);
 
 const igEngagementCheck = instagram.rows[0];
 assert.equal(

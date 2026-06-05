@@ -154,15 +154,19 @@ const youtubeMatrix = [
   Object.values(analytics.YT_HEADERS),
   ["long-a", "Long-form winner", "Jan 5, 2026", 300, 1000, 45, 70, 1200, 50, 12, "0:02:15", 10000, 5.2],
   ["short-c", "Short with weak hook", "Jan 6, 2026", 45, 800, 80, 42, 900, 8, 3, "0:00:36", 2000, 3],
+  ["short-loop", "Short replay winner", "Jan 7, 2026", 20, 500, 125, 65, 900, 8, 4, "0:00:25", 1500, 4],
   ["missing", "Missing metrics", "14", 90, 0, "14", "14", 0, 0, 0, "14", 0, "14"],
 ];
 const youtube = analytics.processYoutubeMatrix(youtubeMatrix);
-assert.equal(youtube.rows.length, 3);
+assert.equal(youtube.rows.length, 4);
 assert.equal(youtube.rows[0].contentType, "long");
-assert.equal(youtube.rows[0].qualityGrade, "B", "long-form retention should use fixed market thresholds");
+assert.equal(youtube.rows[0].qualityGrade, "B", "long-form retention should use length-adjusted market thresholds");
 assert.equal(youtube.rows[1].contentType, "short");
-assert.equal(youtube.rows[1].qualityGrade, "B", "Shorts retention should use fixed market thresholds");
-assert.equal(youtube.rows[2].qualityGrade, "NA", "placeholder values should not be graded");
+assert.equal(youtube.rows[1].qualityGrade, "C", "Shorts should fail when stayed-to-watch is below the standard");
+assert.equal(youtube.rows[2].qualityScore, 100, "APV above 100 should be capped for grading");
+assert.equal(youtube.rows[2].averageViewPercentage, 125, "raw APV should still preserve replay evidence");
+assert.equal(youtube.rows[2].qualityGrade, "A", "Shorts can grade A only when capped APV and stayed-to-watch both pass");
+assert.equal(youtube.rows[3].qualityGrade, "NA", "placeholder values should not be graded");
 
 const instagramGradeA = instagram.rows.find((row) => row.qualityGrade === "A");
 assert.ok(instagramGradeA, "Instagram market grading should create Grade A rows");

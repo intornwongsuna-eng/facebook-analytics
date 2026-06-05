@@ -238,28 +238,28 @@
       <section id="youtubeView" class="platform-view" hidden>
         <article class="methodology-card yt-border">
           <div class="methodology-title yt-soft">
-            <div><p class="section-kicker">Governance Standard v2.0 · Updated 4 June 2026</p><h2>ประเมิน YouTube ด้วยเกณฑ์ Retention ที่อ่านง่าย</h2><p>ใช้ metric จริงจากชีต “ข้อมูลตาราง” แยก Long-form และ Shorts พร้อม Data Validity Gate</p></div>
-            <a class="reference-chip" href="https://pages.dashsocial.com/hubfs/social-media-benchmark/2025/H2/youtube.pdf" target="_blank" rel="noopener">อ้างอิง: YouTube Benchmark H2 2025</a>
+            <div><p class="section-kicker">Governance Standard v2.1 · Updated 5 June 2026</p><h2>ประเมิน YouTube ด้วย Retention Score ที่ไม่โอเวอร์</h2><p>ใช้ Average Percentage Viewed แบบ cap 100 สำหรับตัดเกรด และอ่าน Shorts คู่กับ Stayed to Watch เพื่อกันค่า rewatch ลากคะแนนสูงเกินจริง</p></div>
+            <a class="reference-chip" href="https://support.google.com/youtube/answer/9314415" target="_blank" rel="noopener">อ้างอิง: YouTube Retention Help</a>
           </div>
           <div class="methodology-grid">
             <div>
-              <h3>Long-form · วิดีโอเกิน 60 วินาที</h3>
+              <h3>Long-form · ปรับเกณฑ์ตามความยาวคลิป</h3>
               <div class="grade-rules">
-                <div class="grade-rule"><span class="grade-chip grade-a">A · ดี ≥ 50%</span><span class="grade-action">Retention แข็งแรง</span></div>
-                <div class="grade-rule"><span class="grade-chip grade-b">B · ผ่าน 35–49.9%</span><span class="grade-action">ใช้งานได้ · ปรับจังหวะ</span></div>
-                <div class="grade-rule"><span class="grade-chip grade-c">C · ควรปรับ &lt; 35%</span><span class="grade-action">ทบทวนโครงเรื่อง</span></div>
+                <div class="grade-rule"><span class="grade-chip grade-a">A · ดีตามความยาว</span><span class="grade-action">&lt;5m ≥60% · 5–10m ≥55% · 10–20m ≥50% · 20m+ ≥45%</span></div>
+                <div class="grade-rule"><span class="grade-chip grade-b">B · ผ่านตามความยาว</span><span class="grade-action">&lt;5m ≥50% · 5–10m ≥45% · 10–20m ≥40% · 20m+ ≥35%</span></div>
+                <div class="grade-rule"><span class="grade-chip grade-c">C · ควรปรับ</span><span class="grade-action">ต่ำกว่าเกณฑ์ของช่วงความยาวนั้น</span></div>
               </div>
             </div>
             <div>
-              <h3>Shorts · วิดีโอไม่เกิน 60 วินาที</h3>
+              <h3>Shorts · APV ต้องอ่านคู่กับ Stayed to Watch</h3>
               <div class="grade-rules">
-                <div class="grade-rule"><span class="grade-chip grade-a">A · ดี ≥ 100%</span><span class="grade-action">มี replay/loop แข็งแรง</span></div>
-                <div class="grade-rule"><span class="grade-chip grade-b">B · ผ่าน 70–99.9%</span><span class="grade-action">Retention ใช้งานได้</span></div>
-                <div class="grade-rule"><span class="grade-chip grade-c">C · ควรปรับ &lt; 70%</span><span class="grade-action">แก้ first frame และจังหวะ</span></div>
+                <div class="grade-rule"><span class="grade-chip grade-a">A · ดี ≥ 70%</span><span class="grade-action">และ Stayed to Watch ≥ 60%</span></div>
+                <div class="grade-rule"><span class="grade-chip grade-b">B · ผ่าน ≥ 50%</span><span class="grade-action">และ Stayed to Watch ≥ 45%</span></div>
+                <div class="grade-rule"><span class="grade-chip grade-c">C · ควรปรับ</span><span class="grade-action">APV หรือ Stayed ต่ำกว่าเกณฑ์</span></div>
               </div>
             </div>
           </div>
-          <div class="scorecard-note"><strong>หลักการอ่านผล:</strong> เกณฑ์ YouTube เป็น working standard สำหรับทีมการตลาด ไม่ใช่เกณฑ์ทางการของ YouTube; รายงาน Dash Social H2 2025 ระบุ Beauty Average Percentage Viewed ที่ 104% แต่ไม่ได้แยกคลินิกไทยหรือแยก Long-form/Shorts จึงใช้เป็นทิศทางประกอบเท่านั้น</div>
+          <div class="scorecard-note"><strong>หลักการอ่านผล:</strong> YouTube ไม่มีเกณฑ์สากลตายตัวสำหรับทุกอุตสาหกรรม ระบบนี้จึงใช้ working standard สำหรับทีมคอนเทนต์: ค่า APV ดิบยังแสดงได้ แต่คะแนนตัดเกรดจะ cap ที่ 100 และ Shorts ต้องผ่าน Stayed to Watch ร่วมด้วย</div>
         </article>
         <section class="filter-bar" aria-label="ตัวกรอง YouTube">
           <select id="youtubeTypeFilter"><option value="all">ทุกประเภท</option><option value="long">Long-form</option><option value="short">Shorts</option></select>

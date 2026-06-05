@@ -115,16 +115,37 @@
       basis: "Global Healthcare 2025 and Beauty 2026; applied to Engagement / Reach",
     },
     youtube_short: {
-      metricField: "averageViewPercentage",
-      gradeA: 100,
-      gradeB: 70,
-      basis: "Beauty short-form retention working standard 2025-2026",
+      metricField: "qualityScore",
+      gradeA: 70,
+      gradeB: 50,
+      secondaryMetricField: "stayedToWatch",
+      secondaryGradeA: 60,
+      secondaryGradeB: 45,
+      basis: "YouTube Shorts working standard 2026; APV is capped at 100 and read together with Stayed to Watch",
     },
-    youtube_long: {
-      metricField: "averageViewPercentage",
+    youtube_long_under_5: {
+      metricField: "qualityScore",
+      gradeA: 60,
+      gradeB: 50,
+      basis: "Length-adjusted YouTube retention working standard 2026; videos under 5 minutes",
+    },
+    youtube_long_5_10: {
+      metricField: "qualityScore",
+      gradeA: 55,
+      gradeB: 45,
+      basis: "Length-adjusted YouTube retention working standard 2026; videos 5-10 minutes",
+    },
+    youtube_long_10_20: {
+      metricField: "qualityScore",
       gradeA: 50,
+      gradeB: 40,
+      basis: "Length-adjusted YouTube retention working standard 2026; videos 10-20 minutes",
+    },
+    youtube_long_20_plus: {
+      metricField: "qualityScore",
+      gradeA: 45,
       gradeB: 35,
-      basis: "YouTube long-form retention working standard 2025-2026",
+      basis: "Length-adjusted YouTube retention working standard 2026; videos over 20 minutes",
     },
   };
 
@@ -448,6 +469,10 @@
       const secondaryValue = secondarySourceValue === null || secondarySourceValue === undefined
         ? NaN
         : Number(secondarySourceValue);
+      const requiresYoutubeShortStayed = row.benchmarkGroup === "youtube_short";
+      const requiresSecondary = requiresOneMinute
+        || requiresYoutubeShortStayed
+        || (benchmark?.secondaryMetricField && Number.isFinite(secondaryValue));
       if (!benchmark || !row.dataValid || !Number.isFinite(value)) {
         row.qualityGrade = "NA";
         row.benchmarkGradeA = benchmark?.gradeA ?? null;
@@ -457,7 +482,10 @@
         row.benchmarkBasis = benchmark?.basis || "Insufficient source data";
         return;
       }
-      if (requiresOneMinute && !Number.isFinite(secondaryValue)) {
+      if (requiresSecondary && !Number.isFinite(secondaryValue)) {
+        const missingSecondaryLabel = requiresYoutubeShortStayed
+          ? "Stayed to Watch metric"
+          : "actual 1-minute metric";
         row.qualityGrade = "NA";
         row.primaryGrade = gradeByThreshold(value, benchmark.gradeA, benchmark.gradeB);
         row.secondaryGrade = "NA";
@@ -465,15 +493,15 @@
         row.benchmarkGradeB = benchmark.gradeB;
         row.benchmarkSecondaryGradeA = benchmark.secondaryGradeA;
         row.benchmarkSecondaryGradeB = benchmark.secondaryGradeB;
-        row.benchmarkBasis = `${benchmark.basis}; missing actual 1-minute metric`;
+        row.benchmarkBasis = `${benchmark.basis}; missing ${missingSecondaryLabel}`;
         return;
       }
       row.qualityMetric = value;
       row.primaryGrade = gradeByThreshold(value, benchmark.gradeA, benchmark.gradeB);
-      row.secondaryGrade = requiresOneMinute
+      row.secondaryGrade = requiresSecondary
         ? gradeByThreshold(secondaryValue, benchmark.secondaryGradeA, benchmark.secondaryGradeB)
         : null;
-      row.qualityGrade = requiresOneMinute
+      row.qualityGrade = requiresSecondary
         ? worstGrade(row.primaryGrade, row.secondaryGrade)
         : row.primaryGrade;
       row.benchmarkGradeA = benchmark.gradeA;
@@ -663,11 +691,33 @@
     return applyMarketGrades(rows);
   }
 
+  function youtubeBenchmarkGroup(contentType, duration) {
+    if (contentType === "short") {
+      return "youtube_short";
+    }
+    const minutes = (Number(duration) || 0) / 60;
+    if (minutes < 5) {
+      return "youtube_long_under_5";
+    }
+    if (minutes < 10) {
+      return "youtube_long_5_10";
+    }
+    if (minutes < 20) {
+      return "youtube_long_10_20";
+    }
+    return "youtube_long_20_plus";
+  }
+
   function evaluateYoutubeVideo(rowLike) {
     const contentType = rowLike.contentType || ((Number(rowLike.duration) || 0) <= 60 ? "short" : "long");
     const retention = parseOptionalNumber(rowLike.averageViewPercentage);
     const qualityScore = retention === null ? null : Math.min(Math.max(retention, 0), 100);
-    return { contentType, qualityGrade: "NA", qualityScore };
+    return {
+      contentType,
+      benchmarkGroup: youtubeBenchmarkGroup(contentType, rowLike.duration),
+      qualityGrade: "NA",
+      qualityScore,
+    };
   }
 
   function normalizeYoutube(records) {
@@ -707,7 +757,7 @@
           stayedToWatch,
           impressions: parseNumber(record[YT_HEADERS.impressions]),
           impressionsCtr,
-          benchmarkGroup: `youtube_${evaluation.contentType}`,
+          benchmarkGroup: evaluation.benchmarkGroup,
           dataValid: parseNumber(record[YT_HEADERS.views]) >= 100 && averageViewPercentage !== null,
           qualityMetric: evaluation.qualityScore,
           qualityScore: evaluation.qualityScore,
@@ -1219,7 +1269,7 @@
   }
 
   function youtubeKpis(rows) {
-    const avgRetention = averageMetric(rows.map((row) => row.averageViewPercentage).filter((value) => value !== null));
+    const avgRetention = averageMetric(rows.map((row) => row.qualityScore).filter((value) => value !== null));
     const avgCtr = averageMetric(rows.map((row) => row.impressionsCtr).filter((value) => value !== null));
     const gradeA = rows.filter((row) => row.qualityGrade === "A").length;
     return [
@@ -1227,7 +1277,7 @@
       { label: "Views", value: formatInteger(sumBy(rows, "views")), meta: "จำนวนการดูรวม", accent: "kpi-blue" },
       { label: "Watch Hours", value: formatInteger(sumBy(rows, "watchHours")), meta: "ชั่วโมงรับชมรวม", accent: "kpi-teal" },
       { label: "Subscribers", value: `+${formatInteger(sumBy(rows, "subscribers"))}`, meta: "ผู้ติดตามจากวิดีโอ", accent: "kpi-green" },
-      { label: "Avg Retention", value: avgRetention === null ? "N/A" : `${avgRetention.toFixed(1)}%`, meta: "เปอร์เซ็นต์การดูโดยเฉลี่ย", accent: "kpi-yt" },
+      { label: "Retention Score", value: avgRetention === null ? "N/A" : `${avgRetention.toFixed(1)}%`, meta: "APV capped at 100; Shorts checks stayed-to-watch", accent: "kpi-yt" },
       { label: "Grade A / CTR", value: `${gradeA} / ${avgCtr === null ? "N/A" : `${avgCtr.toFixed(1)}%`}`, meta: "คุณภาพสูง / CTR เฉลี่ย", accent: "kpi-amber" },
     ];
   }
@@ -1529,11 +1579,11 @@
       subtitle: `${row.departmentLabel} | ${formatDateTime(row.publishedAt, row.publishedAtText)} | ${formatDuration(row.duration)}`,
       metrics: [
         { label: "Views", value: formatInteger(row.views), meta: "จำนวนการดู" },
-        { label: "Avg retention", value: formatMetric(row.averageViewPercentage), meta: "เปอร์เซ็นต์การดูโดยเฉลี่ย" },
+        { label: "Raw APV", value: formatMetric(row.averageViewPercentage), meta: "ค่าดิบจาก YouTube Studio; rewatch อาจเกิน 100%" },
         { label: "Stayed to watch", value: formatMetric(row.stayedToWatch), meta: "สัดส่วน Shorts ที่ผู้ชมเลือกอยู่ดูต่อ" },
         { label: "Impression CTR", value: formatMetric(row.impressionsCtr), meta: "คุณภาพชื่อคลิปและ Thumbnail" },
         { label: "Watch hours", value: formatInteger(row.watchHours), meta: "เวลารับชมรวม" },
-        { label: "Grade metric", value: row.qualityScore === null ? "N/A" : `${row.qualityScore.toFixed(0)}/100`, meta: "Average Percentage Viewed" },
+        { label: "Retention score", value: row.qualityScore === null ? "N/A" : `${row.qualityScore.toFixed(0)}/100`, meta: "APV capped at 100 for grading" },
         { label: "Market standard", value: benchmarkBand(row), meta: row.benchmarkBasis },
       ],
       gradeLabel: gradeLabel(row.qualityGrade),
@@ -1586,12 +1636,18 @@
       return "ข้อมูล Retention ไม่เพียงพอสำหรับตัดเกรด ระบบจึงแสดง N/A เพื่อหลีกเลี่ยงข้อสรุปที่เกินข้อมูลจริง";
     }
     if (row.qualityGrade === "A") {
-      return `Average Percentage Viewed ผ่านระดับดีของ ${row.contentType === "short" ? "Shorts" : "Long-form"} (${row.benchmarkBasis})`;
+      return row.contentType === "short"
+        ? `Retention Score และ Stayed to Watch ผ่านระดับดีของ Shorts (${row.benchmarkBasis})`
+        : `Retention Score ผ่านระดับดีของ Long-form ตามความยาวคลิป (${row.benchmarkBasis})`;
     }
     if (row.qualityGrade === "B") {
-      return "วิดีโอรักษาคนดูได้ในระดับใช้งาน แต่ยังมีพื้นที่ให้ปรับ Hook, จังหวะการเล่า หรือ Packaging เพื่อขึ้นสู่ Grade A";
+      return row.contentType === "short"
+        ? "Shorts อยู่ในระดับใช้งาน แต่ยังควรปรับ first frame, hook และ stayed-to-watch เพื่อไม่ให้ APV สูงเฉพาะกลุ่มที่ดูซ้ำ"
+        : "Long-form รักษาคนดูได้ในระดับใช้งาน แต่ยังมีพื้นที่ให้ปรับ Hook, จังหวะการเล่า หรือ Packaging เพื่อขึ้นสู่ Grade A";
     }
-    return "Retention ต่ำกว่าเกณฑ์หลัก ควรทบทวนคำสัญญาในช่วงเปิด โครงเรื่อง และเวลาที่ใช้ก่อนเข้าสู่สาระสำคัญ";
+    return row.contentType === "short"
+      ? "Shorts ต่ำกว่าเกณฑ์หลัก ควรทบทวน first frame, ข้อความเปิด และจังหวะก่อนถึง payoff โดยดู Stayed to Watch คู่กับ APV"
+      : "Retention ต่ำกว่าเกณฑ์หลัก ควรทบทวนคำสัญญาในช่วงเปิด โครงเรื่อง และเวลาที่ใช้ก่อนเข้าสู่สาระสำคัญ";
   }
 
   function facebookActions(row) {
@@ -1911,8 +1967,9 @@
       return "N/A";
     }
     const primary = `ดี ≥ ${Number(row.benchmarkGradeA).toFixed(1)}% | ผ่าน ≥ ${Number(row.benchmarkGradeB).toFixed(1)}%`;
-    if (row.duration >= 60 && row.benchmarkSecondaryGradeA !== null && row.benchmarkSecondaryGradeA !== undefined) {
-      return `${primary} | 1min ดี ≥ ${Number(row.benchmarkSecondaryGradeA).toFixed(1)}% · ผ่าน ≥ ${Number(row.benchmarkSecondaryGradeB).toFixed(1)}%`;
+    if (row.benchmarkSecondaryGradeA !== null && row.benchmarkSecondaryGradeA !== undefined) {
+      const secondaryLabel = row.benchmarkGroup === "youtube_short" ? "Stayed" : "1min";
+      return `${primary} | ${secondaryLabel} ดี ≥ ${Number(row.benchmarkSecondaryGradeA).toFixed(1)}% · ผ่าน ≥ ${Number(row.benchmarkSecondaryGradeB).toFixed(1)}%`;
     }
     return primary;
   }
